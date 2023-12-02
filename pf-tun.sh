@@ -73,6 +73,7 @@ ssh() {
     prepration
     root
     ssh_tunnel() {
+        clear
         echo ""
         echo -e "${GREEN}Starting a New SSH tunnel...${NC}"
         echo ""
@@ -159,7 +160,7 @@ ssh() {
     }
 
     Reverse_ssh() {
-        prepration
+clear
             echo ""
             echo -e "${GREEN}Starting a New Reverse SSH tunnel...${NC}"
             echo ""
