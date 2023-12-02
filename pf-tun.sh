@@ -430,7 +430,7 @@ iptables() {
 
             echo ""
             echo -ne "${YELLOW}Enter the local (Iran) IPV6 ${GREEN}[press Enter to use the public IPv6] : ${NC}  "
-            read local_port_ipv6
+            read local_ip_ipv6
             [[ -z "${local_ip_ipv6}" ]] && local_ip_ipv6=$(ip -6 addr show | grep "scope global" | awk '{print $2}' | cut -d'/' -f1)
             [[ -z "${local_ip_ipv6}" ]] && read -e -p "Cant find it, please enter local IPv6 of this server: " local_ip_ipv6
             [[ -z "${local_ip_ipv6}" ]] && echo "Cancel..." && exit 1
@@ -485,6 +485,7 @@ iptables() {
 
             echo -e "\e[92mIPv6 forwarding rules configured successfully!\e[0m"
         }
+
 while true; do
 clear
 printf "\e[93m+---------------------------------------------+\e[0m\n"
