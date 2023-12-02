@@ -69,8 +69,6 @@ prepration() {
     echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
 }
 
-prepration
-
 ssh() {
     clear
     prepration
@@ -163,6 +161,7 @@ ssh() {
     }
 
     Reverse_ssh() {
+        prepration
             echo ""
             echo -e "${GREEN}Starting a New Reverse SSH tunnel...${NC}"
             echo ""
@@ -298,7 +297,7 @@ done
 iptables() {
     clear
         iptables_setup() {
-            # Check if iptables is installed
+            prepration
             if ! command -v iptables &> /dev/null; then
                 echo -e "\e[91mError: iptables not installed. Installing...\e[0m"
                 if [[ "${release}" == "centos" ]]; then
@@ -309,7 +308,6 @@ iptables() {
                     apt-get install -y iptables
                 fi
 
-                # Check again after installation
                 if ! command -v iptables &> /dev/null; then
                     echo -e "\e[91mError: Failed to install iptables. Exiting.\e[0m"
                     exit 1
@@ -320,12 +318,10 @@ iptables() {
                 echo -e "\e[92miptables has been installed, continuing...\e[0m"
             fi
 
-            # Enable IP forwarding
             echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
             echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
             sysctl -p
 
-            # Set up iptables rules
             if [[ "${release}" == "centos" ]]; then
                 service iptables save
                 chkconfig --level 2345 iptables on
@@ -343,7 +339,6 @@ iptables() {
 
         iptables_forwarding() {
             iptables_setup
-            # Read user input for port forwarding
             read -e -p "Enter the remote port [1-65535] to be forwarded to by iptables (support port range such as 2333-6666): " forwarding_port
             [[ -z "${forwarding_port}" ]] && echo "Cancel..." && exit 1
 
@@ -367,7 +362,6 @@ iptables() {
                 *) forwarding_type="TCP+UDP";;
             esac
 
-            # Display configuration
             echo -e "\n\e[92mConfiguration Summary:\e[0m"
             echo -e "  Forwarding Ports: \e[91m${forwarding_port}\e[0m"
             echo -e "  Forwarded IP: \e[91m${forwarding_ip}\e[0m"
@@ -378,17 +372,14 @@ iptables() {
             read -e -p "Press any key to continue, or use Ctrl+C to exit if there is a configuration error."
 
             if [[ ${forwarding_type} == "TCP" ]]; then
-                # Set up iptables rules for TCP
                 iptables -t nat -A PREROUTING -p tcp --dport "${local_port}" -j DNAT --to-destination "${forwarding_ip}:${forwarding_port}"
                 iptables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip}" --dport "${forwarding_port}" -j SNAT --to-source "${local_ip}"
                 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port}" -j ACCEPT
             elif [[ ${forwarding_type} == "UDP" ]]; then
-                # Set up iptables rules for UDP
                 iptables -t nat -A PREROUTING -p udp --dport "${local_port}" -j DNAT --to-destination "${forwarding_ip}:${forwarding_port}"
                 iptables -t nat -A POSTROUTING -p udp -d "${forwarding_ip}" --dport "${forwarding_port}" -j SNAT --to-source "${local_ip}"
                 iptables -I INPUT -m state --state NEW -m udp -p udp --dport "${local_port}" -j ACCEPT
             elif [[ ${forwarding_type} == "TCP+UDP" ]]; then
-                # Set up iptables rules for both TCP and UDP
                 iptables -t nat -A PREROUTING -p tcp --dport "${local_port}" -j DNAT --to-destination "${forwarding_ip}:${forwarding_port}"
                 iptables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip}" --dport "${forwarding_port}" -j SNAT --to-source "${local_ip}"
                 iptables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port}" -j ACCEPT
@@ -400,7 +391,6 @@ iptables() {
                 echo -e "\e[91mInvalid forwarding type selected. Exiting...\e[0m"
                 exit 1
             fi
-            # Save rules
             if [[ "${release}" == "centos" ]]; then
                 service iptables save
             else
@@ -413,7 +403,6 @@ iptables() {
         ip6tables_forwarding() {
             iptables_setup
 
-            # Read user input for IPv6 port forwarding
             read -e -p "Enter the remote port [1-65535] to be forwarded to by ip6tables (support port range such as 2333-6666): " forwarding_port_ipv6
             [[ -z "${forwarding_port_ipv6}" ]] && echo "Cancel..." && exit 1
 
@@ -437,7 +426,6 @@ iptables() {
                 *) forwarding_type_ipv6="TCP+UDP";;
             esac
 
-            # Display configuration
             echo -e "\n\e[92mIPv6 Configuration Summary:\e[0m"
             echo -e "  Forwarding Ports: \e[91m${forwarding_port_ipv6}\e[0m"
             echo -e "  Forwarded IPv6: \e[91m${forwarding_ip_ipv6}\e[0m"
@@ -448,17 +436,14 @@ iptables() {
             read -e -p "Press any key to continue, or use Ctrl+C to exit if there is a configuration error."
 
             if [[ ${forwarding_type_ipv6} == "TCP" ]]; then
-                # Set up ip6tables rules for TCP
                 ip6tables -t nat -A PREROUTING -p tcp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
                 ip6tables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
                 ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port_ipv6}" -j ACCEPT
             elif [[ ${forwarding_type_ipv6} == "UDP" ]]; then
-                # Set up ip6tables rules for UDP
                 ip6tables -t nat -A PREROUTING -p udp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
                 ip6tables -t nat -A POSTROUTING -p udp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
                 ip6tables -I INPUT -m state --state NEW -m udp -p udp --dport "${local_port_ipv6}" -j ACCEPT
             elif [[ ${forwarding_type_ipv6} == "TCP+UDP" ]]; then
-                # Set up ip6tables rules for both TCP and UDP
                 ip6tables -t nat -A PREROUTING -p tcp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
                 ip6tables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
                 ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port_ipv6}" -j ACCEPT
@@ -471,7 +456,6 @@ iptables() {
                 exit 1
             fi
 
-            # Save rules
             if [[ "${release}" == "centos" ]]; then
                 service ip6tables save
             else
@@ -517,6 +501,7 @@ done
 socat() {
     clear
     Socat_install() {
+        prepration
         if [[ "${release}" == "centos" ]]; then
                     yum update
                     yum install -y socat
@@ -528,11 +513,12 @@ socat() {
     }
 
     Socat_v4() {
+        prepration
+        Socat_install
     echo ""
     echo -e "${GREEN}Starting Socat direct port forwarding over IPv4...${NC}"
     echo ""
     
-    # Input validation for the local port
     while true; do
         echo -ne "${YELLOW}Enter the local port to forward [1-65535]: ${NC}"
         read local_port
@@ -547,7 +533,6 @@ socat() {
     echo -ne "${YELLOW}Enter the destination IP address (Kharej): ${NC}"
     read destination_ip
 
-    # Input validation for the destination port
     while true; do
         echo -ne "${YELLOW}Enter the destination port on Kharej (config port) [1-65535]: ${NC}"
         read destination_port
@@ -614,6 +599,8 @@ WantedBy=multi-user.target
 }
 
     Socat_v6() {
+        prepration
+        Socat_install
     echo ""
     echo -e "${GREEN}Starting Socat direct port forwarding over IPv6...${NC}"
     echo ""
@@ -700,6 +687,8 @@ WantedBy=multi-user.target
 }
 
 re_socat_v4() {
+    prepration
+    Socat_install
     echo ""
     echo -e "${GREEN}Starting Socat reverse port forwarding over IPv4...${NC}"
     echo ""
@@ -782,6 +771,9 @@ WantedBy=multi-user.target
 }
 
     re_socat_v6() {
+        prepration
+        Socat_install
+        clear
     echo ""
     echo -e "${GREEN}Starting Socat reverse port forwarding over IPv6...${NC}"
     echo ""
@@ -908,7 +900,7 @@ case $option in
             done
                     ;;
     2)
-                    while true; do
+            while true; do
             clear
             printf "\e[93m+---------------------------------------------+\e[0m\n"
             printf "\e[93m|              Reverse Socat Menu             |\e[0m\n"
@@ -941,7 +933,6 @@ case $option in
                     ;;
             esac
             done
-                    ;;
         ;;
     0)
         echo -e "${YELLOW}Main Menu.${NC}"
