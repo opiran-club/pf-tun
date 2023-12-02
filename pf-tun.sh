@@ -73,6 +73,11 @@ ssh() {
     root
     ssh_tunnel() {
         clear
+        sshd_config="/etc/ssh/sshd_config"
+        sed -i '/^#AllowTcpForwarding/c\AllowTcpForwarding yes' "$sshd_config"
+        sed -i '/^#GatewayPorts/c\GatewayPorts yes' "$sshd_config"
+        service ssh restart
+
         echo ""
         echo -e "${GREEN}Starting a New SSH tunnel...${NC}"
         echo ""
@@ -159,11 +164,14 @@ ssh() {
     }
 
     Reverse_ssh() {
-clear
+            clear
             echo ""
             echo -e "${GREEN}Starting a New Reverse SSH tunnel...${NC}"
             echo ""
-            echo -e "${GREEN}Creating this on Remote server (Kharej)${NC}"
+            echo -e "${GREEN}copy and paste below command in your local (IRAN) terminal${NC}"
+            echo -e "${MAGENTA}sed -i '/^#AllowTcpForwarding/c\AllowTcpForwarding yes' "/etc/ssh/sshd_config" && sed -i '/^#GatewayPorts/c\GatewayPorts yes' "/etc/ssh/sshd_config" && service ssh restart ${NC}"
+            echo ""
+            echo -e "${GREEN}Lets create this on Remote server (Kharej)${NC}"
             echo ""
             echo -ne "${YELLOW}Enter the local port to forward ${GREEN}(default: 22): ${NC}"
             read local_port
