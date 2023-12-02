@@ -234,7 +234,7 @@ ssh() {
                     ;;
             esac
 
-            cron_command="${cron_schedule} ssh -N -R *:$port_local:localhost:$port_remote root@$ip_iran"
+            cron_command="${cron_schedule} ssh -N -R *:$local_port:localhost:$port_remote root@$ip_iran"
             (crontab -l ; echo "$cron_command") | crontab -
 
             echo ""
