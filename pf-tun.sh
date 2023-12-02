@@ -1331,12 +1331,13 @@ color blue "$tg_title"
 color blue "$yt_title"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}SSH Tunnel (IPV4/6)${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}Iptables (IPv4/6) (UDP+TCP)${NC}"
-echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (IPv4/6)${NC}"
-echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (IPv4/6)${NC}"
-echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (IPv4/6)${NC}"
-echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (IPv4/6)${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}SSH Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (v4/6)${NC}"
+echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
+echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
+echo -e "${CYAN}  7${NC}) ${YELLOW}Private-IP and tunnel${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Exit${NC}"
 echo ""
@@ -1376,6 +1377,10 @@ read option
                     apt-get install -y curl
                 fi
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/wgtunnel/main/udp2raw.sh --ipv4)
+        ;;
+        7)
+        apt-get install python-pip -y  &&  apt-get install python3 -y && alias python=python3 && python -m pip install colorama && python -m pip install netifaces
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
         ;;
         0)
             echo -e "${YELLOW}Exiting.${NC}"
