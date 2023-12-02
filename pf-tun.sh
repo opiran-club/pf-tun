@@ -143,7 +143,7 @@ ssh() {
             After=network.target
 
             [Service]
-            ExecStart=ssh -L $local_port:localhost:$port_remote root@$ip_kharej
+            ExecStart=/usr/bin/ssh -n -L $local_port:localhost:$port_remote root@$ip_kharej
             Restart=on-failure
             RestartSec=10
 
