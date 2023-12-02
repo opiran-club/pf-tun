@@ -90,12 +90,7 @@ ssh() {
         echo -ne "${YELLOW}Enter the destination port on Kharej ${GREEN}(default: 22): ${NC}"
         read port_remote
         port_remote=${port_remote:-22}
-        
-        ssh_tunnel_command="ssh -L $local_port:localhost:$port_remote root@$ip_kharej"
 
-            $ssh_tunnel_command
-            echo ""
-            echo -e "${GREEN}Direct SSH tunnel has been established.${NC}"
             echo ""
             echo -e "${YELLOW}cronjob to restart the tunnel ${GREEN}[1-4]${NC}"
             echo -e "  ${GREEN}1. Reboot${NC}"
@@ -124,9 +119,13 @@ ssh() {
                     ;;
             esac
 
+
+            ssh_tunnel_command="ssh -L $local_port:localhost:$port_remote root@$ip_kharej"
+            echo ""
+            echo ""
             cron_command="${cron_schedule} ssh -L $local_port:localhost:$port_remote root@$ip_kharej"
             (crontab -l ; echo "$cron_command") | crontab -
-
+            
             echo ""
             echo -e "${GREEN}SSH tunnel set up and added to cron job @${time}.${NC}"
             echo ""
@@ -195,7 +194,6 @@ ssh() {
 
             ssh_tunnel_command="ssh -N -R *:$local_port:localhost:$port_remote root@$ip_iran"
 
-            $ssh_tunnel_command
             echo ""
             echo -e "${GREEN}Reverse SSH tunnel has been established.${NC}"
             echo ""
