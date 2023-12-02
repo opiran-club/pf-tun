@@ -70,7 +70,6 @@ prepration() {
 
 ssh() {
     clear
-    prepration
     root
     ssh_tunnel() {
         clear
