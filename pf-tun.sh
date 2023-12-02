@@ -1324,9 +1324,8 @@ clear
 title_text="Direct / Reverse Tunnels"
 tg_title="TG-Group @OPIranCluB"
 yt_title="youtube.com/@opiran-inistitute"
-clear
-color magenta"                 ${title_text}"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
+color magenta"                 ${title_text}"
 color blue "$tg_title"
 color blue "$yt_title"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
@@ -1337,8 +1336,9 @@ echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (v4/6)${NC}"
 echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
 echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
 echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
-echo -e "${CYAN}  7${NC}) ${YELLOW}Private-IP (ICMP) and Tunnel (Azumi) ${NC}"
+echo -e "${CYAN}  7${NC}) ${YELLOW}Private-IP (ICMP) and tunnel ${RED} (Azumi)${NC}"
 echo ""
+echo -e "${CYAN} 8${NC}) ${RED}OPIran OPtimizer${NC}"
 echo -e "${CYAN} 0${NC}) ${RED}Exit${NC}"
 echo ""
 echo ""
@@ -1381,6 +1381,9 @@ read option
         7)
         apt-get install python-pip -y  &&  apt-get install python3 -y && alias python=python3 && python -m pip install colorama && python -m pip install netifaces
         python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
+        ;;
+        8)
+        bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
         ;;
         0)
             echo -e "${YELLOW}Exiting.${NC}"
