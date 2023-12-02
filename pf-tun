@@ -65,8 +65,7 @@ prepration() {
     root
     clear
     apt-get update
-    apt-get -y install iptables ip6tables socat curl jq openssl wget ca-certificates unzip
-    echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+    apt-get -y install iptables socat curl jq openssl wget ca-certificates unzip
 }
 
 ssh() {
@@ -320,7 +319,7 @@ iptables() {
 
             echo "net.ipv4.ip_forward=1" >> /etc/sysctl.conf
             echo "net.ipv6.conf.all.forwarding=1" >> /etc/sysctl.conf
-            sysctl -p
+            sysctl --system
 
             if [[ "${release}" == "centos" ]]; then
                 service iptables save
@@ -339,21 +338,32 @@ iptables() {
 
         iptables_forwarding() {
             iptables_setup
-            read -e -p "Enter the remote port [1-65535] to be forwarded to by iptables (support port range such as 2333-6666): " forwarding_port
+            clear
+            echo ""
+            echo -ne "${YELLOW}Enter the remote port [1-65535] (Kharej) ${GREEN}[support port range e.g. 2333-2355]: ${NC}   "
+            read forwarding_port
             [[ -z "${forwarding_port}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Enter the remote IP to be forwarded to by iptables (forwarded server): " forwarding_ip
+            echo ""
+            echo -ne "${YELLOW}Enter the remote IP (Kharej) : ${NC}  "
+            read forwarding_ip
             [[ -z "${forwarding_ip}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Enter the local listening port [1-65535] (support port range such as 2333-6666) [Default: ${forwarding_port}]: " local_port
+            echo ""
+            echo -ne "${YELLOW}Enter the local (Iran) port [support port range e.g. 2333-2355] ${GREEN}[Default: ${forwarding_port}] : ${NC}  "
+            read local_port
             [[ -z "${local_port}" ]] && local_port="${forwarding_port}"
 
-            read -e -p "Enter local IP of this server (press Enter to use the public IP): " local_ip
+            echo ""
+            echo -ne "${YELLOW}Enter local IP of this server ${GREEN}[press Enter to use the public IP] : ${NC}  "
+            read local_ip
             [[ -z "${local_ip}" ]] && local_ip=$(wget -qO- -t1 -T2 ipinfo.io/ip)
-            [[ -z "${local_ip}" ]] && read -e -p "Enter local IP of this server: " local_ip
+            [[ -z "${local_ip}" ]] && read -e -p "Cant find it, please enter local IP of this server: " local_ip
             [[ -z "${local_ip}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Select iptables forwarding type (1-TCP, 2-UDP, 3-TCP+UDP) [Default: 3]: " forwarding_type_num
+             echo ""
+            echo -ne "${YELLOW}Select iptables forwarding type (1-TCP, 2-UDP, 3-TCP+UDP) [Default: 3]: ${GREEN}[1-TCP, 2-UDP, 3-TCP+UDP] : ${NC}  "
+            read forwarding_type_num
             [[ -z "${forwarding_type_num}" ]] && forwarding_type_num="3"
             case "${forwarding_type_num}" in
                 1) forwarding_type="TCP";;
@@ -402,22 +412,32 @@ iptables() {
 
         ip6tables_forwarding() {
             iptables_setup
-
-            read -e -p "Enter the remote port [1-65535] to be forwarded to by ip6tables (support port range such as 2333-6666): " forwarding_port_ipv6
+            clear
+            echo ""
+            echo -ne "${YELLOW}Enter the remote port [1-65535] (Kharej) ${GREEN}[support port range e.g. 2333-2355]: ${NC}   "
+            read forwarding_port_ipv6
             [[ -z "${forwarding_port_ipv6}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Enter the remote IPv6 to be forwarded to by ip6tables (forwarded server): " forwarding_ip_ipv6
+            echo ""
+            echo -ne "${YELLOW}Enter the remote (Kharej) IPV6: ${NC}   "
+            read forwarding_ip_ipv6
             [[ -z "${forwarding_ip_ipv6}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Enter the local listening port [1-65535] (support port range such as 2333-6666) [Default: ${forwarding_port_ipv6}]: " local_port_ipv6
+            echo ""
+            echo -ne "${YELLOW}Enter the local (Iran) port [support port range e.g. 2333-2355] ${GREEN}[Default: ${forwarding_port}] : ${NC}  "
+            read local_port_ipv6
             [[ -z "${local_port_ipv6}" ]] && local_port_ipv6="${forwarding_port_ipv6}"
 
-            read -e -p "Enter local IPv6 of this server (press Enter to use the public IPv6): " local_ip_ipv6
+            echo ""
+            echo -ne "${YELLOW}Enter the local (Iran) IPV6 ${GREEN}[press Enter to use the public IPv6] : ${NC}  "
+            read local_port_ipv6
             [[ -z "${local_ip_ipv6}" ]] && local_ip_ipv6=$(ip -6 addr show | grep "scope global" | awk '{print $2}' | cut -d'/' -f1)
-            [[ -z "${local_ip_ipv6}" ]] && read -e -p "Enter local IPv6 of this server: " local_ip_ipv6
+            [[ -z "${local_ip_ipv6}" ]] && read -e -p "Cant find it, please enter local IPv6 of this server: " local_ip_ipv6
             [[ -z "${local_ip_ipv6}" ]] && echo "Cancel..." && exit 1
 
-            read -e -p "Select ip6tables forwarding type (1-TCP, 2-UDP, 3-TCP+UDP) [Default: 3]: " forwarding_type_ipv6_num
+            echo ""
+            echo -ne "${YELLOW}Select iptables forwarding type (1-TCP, 2-UDP, 3-TCP+UDP) [Default: 3]: ${GREEN}[1-TCP, 2-UDP, 3-TCP+UDP] : ${NC}  "
+            read forwarding_type_ipv6_num
             [[ -z "${forwarding_type_ipv6_num}" ]] && forwarding_type_ipv6_num="3"
             case "${forwarding_type_ipv6_num}" in
                 1) forwarding_type_ipv6="TCP";;
@@ -1312,7 +1332,7 @@ read option
         ssh
         ;;
         2)
-        Iptables
+        iptables
         ;;
         3)
         socat
