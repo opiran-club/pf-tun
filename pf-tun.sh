@@ -456,21 +456,22 @@ iptables() {
             read -e -p "Press any key to continue, or use Ctrl+C to exit if there is a configuration error."
 
             if [[ ${forwarding_type_ipv6} == "TCP" ]]; then
-                ip6tables -t nat -A PREROUTING -p tcp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
-                ip6tables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
+                sysctl -w net.ipv6.conf.all.forwarding=1
+                ip6tables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
                 ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port_ipv6}" -j ACCEPT
+                ip6tables -A FORWARD -p tcp --dport "${forwarding_port_ipv6}" -m state --state NEW -j ACCEPT
             elif [[ ${forwarding_type_ipv6} == "UDP" ]]; then
-                ip6tables -t nat -A PREROUTING -p udp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
-                ip6tables -t nat -A POSTROUTING -p udp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
+                sysctl -w net.ipv6.conf.all.forwarding=1
+                ip6tables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
                 ip6tables -I INPUT -m state --state NEW -m udp -p udp --dport "${local_port_ipv6}" -j ACCEPT
+                ip6tables -A FORWARD -p udp --dport "${forwarding_port_ipv6}" -m state --state NEW -j ACCEPT
             elif [[ ${forwarding_type_ipv6} == "TCP+UDP" ]]; then
-                ip6tables -t nat -A PREROUTING -p tcp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
-                ip6tables -t nat -A POSTROUTING -p tcp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
+                sysctl -w net.ipv6.conf.all.forwarding=1
+                ip6tables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
                 ip6tables -I INPUT -m state --state NEW -m tcp -p tcp --dport "${local_port_ipv6}" -j ACCEPT
-
-                ip6tables -t nat -A PREROUTING -p udp --dport "${local_port_ipv6}" -j DNAT --to-destination "[${forwarding_ip_ipv6}]:${forwarding_port_ipv6}"
-                ip6tables -t nat -A POSTROUTING -p udp -d "${forwarding_ip_ipv6}" --dport "${forwarding_port_ipv6}" -j SNAT --to-source "${local_ip_ipv6}"
                 ip6tables -I INPUT -m state --state NEW -m udp -p udp --dport "${local_port_ipv6}" -j ACCEPT
+                ip6tables -A FORWARD -p tcp --dport "${forwarding_port_ipv6}" -m state --state NEW -j ACCEPT
+                ip6tables -A FORWARD -p udp --dport "${forwarding_port_ipv6}" -m state --state NEW -j ACCEPT
             else
                 echo -e "\e[91mInvalid forwarding type selected. Exiting...\e[0m"
                 exit 1
