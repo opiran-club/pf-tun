@@ -153,6 +153,8 @@ ssh() {
             systemctl daemon-reload
             systemctl start ssh-tunnel-$local_port
             systemctl enable ssh-tunnel-$local_port
+            sleep 3
+            systemctl restart ssh-tunnel-$local_port
             echo ""
             echo ""
             echo -e "${GREEN}ALL TASK WERE SUCCESFULLY DONE, SO KEEP ENJOYING THE TUNNEL${NC}"
@@ -257,6 +259,8 @@ ssh() {
             systemctl daemon-reload
             systemctl start reverse-tunnel-$local_port
             systemctl enable reverse-tunnel-$local_port
+            sleep 3
+            systemctl restart reverse-tunnel-$local_port
             echo ""
             echo ""
             echo -e "${GREEN}ALL TASK WERE SUCCESFULLY DONE, SO KEEP ENJOYING THE TUNNEL${NC}"
