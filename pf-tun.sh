@@ -357,7 +357,7 @@ iptables() {
             echo ""
             echo -ne "${YELLOW}Enter local IP of this server ${GREEN}[press Enter to use the public IP] : ${NC}  "
             read local_ip
-            [[ -z "${local_ip}" ]] && local_ip=$(wget -qO- -t1 -T2 ipinfo.io/ip)
+            [[ -z "${local_ip}" ]] && local_ip=$(ip -4 addr show | grep "scope global" | awk '{print $2}' | cut -d'/' -f1)
             [[ -z "${local_ip}" ]] && read -e -p "Cant find it, please enter local IP of this server: " local_ip
             [[ -z "${local_ip}" ]] && echo "Cancel..." && exit 1
 
