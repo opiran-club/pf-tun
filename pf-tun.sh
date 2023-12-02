@@ -545,8 +545,8 @@ socat() {
     }
 
     Socat_v4() {
-        prepration
         Socat_install
+        clear
     echo ""
     echo -e "${GREEN}Starting Socat direct port forwarding over IPv4...${NC}"
     echo ""
@@ -564,7 +564,7 @@ socat() {
     echo ""
     echo -ne "${YELLOW}Enter the destination IP address (Kharej): ${NC}"
     read destination_ip
-
+    echo ""
     while true; do
         echo -ne "${YELLOW}Enter the destination port on Kharej (config port) [1-65535]: ${NC}"
         read destination_port
@@ -605,14 +605,14 @@ socat() {
             ;;
     esac
 
-    cron_command="${cron_schedule} $socat_command"
-    (crontab -l || echo "") | grep -v "$socat_command" | (cat; echo "$cron_command") | crontab -
+    cron_command="${cron_schedule} \"$socat_command\""
+(crontab -l || echo "") | grep -v "$socat_command" | (cat; echo "$cron_command") | crontab -
 
     echo "[Unit]
 Description=socat $local_port
 
 [Service]
-ExecStart=$socat_command
+ExecStart=/usr/bin/socat TCP4-LISTEN:$local_port,fork,su=nobody TCP4:$destination_ip:$destination_port
 Restart=always
 
 [Install]
@@ -622,6 +622,8 @@ WantedBy=multi-user.target
     systemctl daemon-reload
     systemctl start "socat-$local_port"
     systemctl enable "socat-$local_port"
+    sleep 3
+    systemctl restart "socat-$local_port"
 
     echo ""
     echo ""
@@ -693,14 +695,14 @@ WantedBy=multi-user.target
             ;;
     esac
 
-    cron_command_ipv6="${cron_schedule_ipv6} $socat_command_ipv6"
+    cron_command_ipv6="${cron_schedule_ipv6} \"$socat_command_ipv6\""
     (crontab -l || echo "") | grep -v "$socat_command_ipv6" | (cat; echo "$cron_command_ipv6") | crontab -
 
     echo "[Unit]
 Description=socat $local_port_ipv6 (IPv6)
 
 [Service]
-ExecStart=$socat_command_ipv6
+ExecStart=/usr/bin/socat TCP6-LISTEN:$local_port_ipv6,fork,su=nobody TCP6:[$destination_ip_ipv6]:$destination_port_ipv6
 Restart=always
 
 [Install]
