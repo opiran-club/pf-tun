@@ -1935,7 +1935,6 @@ del_private() {
     clear
     color green "Creating Private IPV4 and Configuration"
     echo ""
-while true; do
 title_text="Private IPV4"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo -e "$MAGENTA$BOLD             ${title_text}"
@@ -2003,7 +2002,6 @@ read option
         press_enter
         ;;
     esac
-done
 
     echo ""
     echo ""
@@ -2055,7 +2053,6 @@ EOF
     clear
     color green "Creating Private IPV6 and Configuration"
     echo ""
-while true; do
 title_text="Private IPV6"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo -e "$MAGENTA$BOLD             ${title_text}"
@@ -2112,7 +2109,6 @@ case $option in
             press_enter
                 ;;
         esac
-    done
 
     echo ""
     echo ""
