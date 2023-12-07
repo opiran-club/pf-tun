@@ -43,6 +43,7 @@ check_sys(){
 }
 
 CYAN="\e[96m"
+MAGENTA="\e[95m"
 GREEN="\e[92m"
 YELLOW="\e[93m"
 RED="\e[91m"
@@ -547,66 +548,66 @@ socat() {
     Socat_v4() {
         Socat_install
         clear
-    echo ""
-    echo -e "${GREEN}Starting Socat direct port forwarding over IPv4...${NC}"
-    echo ""
-    
-    while true; do
-        echo -ne "${YELLOW}Enter the local port to forward [1-65535]: ${NC}"
-        read local_port
-        if [[ $local_port =~ ^[0-9]+$ && $local_port -ge 1 && $local_port -le 65535 ]]; then
-            break
-        else
-            echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
-        fi
-    done
+        echo ""
+        echo -e "${GREEN}Starting Socat direct port forwarding over IPv4...${NC}"
+        echo ""
+        
+        while true; do
+            echo -ne "${YELLOW}Enter the local port to forward [1-65535]: ${NC}"
+            read local_port
+            if [[ $local_port =~ ^[0-9]+$ && $local_port -ge 1 && $local_port -le 65535 ]]; then
+                break
+            else
+                echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
+            fi
+        done
 
-    echo ""
-    echo -ne "${YELLOW}Enter the destination IP address (Kharej): ${NC}"
-    read destination_ip
-    echo ""
-    while true; do
-        echo -ne "${YELLOW}Enter the destination port on Kharej (config port) [1-65535]: ${NC}"
-        read destination_port
-        if [[ $destination_port =~ ^[0-9]+$ && $destination_port -ge 1 && $destination_port -le 65535 ]]; then
-            break
-        else
-            echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
-        fi
-    done
+        echo ""
+        echo -ne "${YELLOW}Enter the destination IP address (Kharej): ${NC}"
+        read destination_ip
+        echo ""
+        while true; do
+            echo -ne "${YELLOW}Enter the destination port on Kharej (config port) [1-65535]: ${NC}"
+            read destination_port
+            if [[ $destination_port =~ ^[0-9]+$ && $destination_port -ge 1 && $destination_port -le 65535 ]]; then
+                break
+            else
+                echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
+            fi
+        done
 
-    socat_command="/usr/bin/socat TCP4-LISTEN:$local_port,fork,su=nobody TCP4:$destination_ip:$destination_port"
+        socat_command="/usr/bin/socat TCP4-LISTEN:$local_port,fork,su=nobody TCP4:$destination_ip:$destination_port"
 
-    echo ""
-    echo -e "${YELLOW}Choose the cronjob schedule:${NC}"
-    echo -e "  ${GREEN}1. Reboot${NC}"
-    echo -e "  ${GREEN}2. Daily${NC}"
-    echo -e "  ${GREEN}3. Weekly${NC}"
-    echo -e "  ${GREEN}4. Hourly${NC}"
-    echo -ne "${YELLOW}Your choice [1-4] (default: Reboot): ${NC}"
-    read choice
-    choice=${choice:-1}
+        echo ""
+        echo -e "${YELLOW}Choose the cronjob schedule:${NC}"
+        echo -e "  ${GREEN}1. Reboot${NC}"
+        echo -e "  ${GREEN}2. Daily${NC}"
+        echo -e "  ${GREEN}3. Weekly${NC}"
+        echo -e "  ${GREEN}4. Hourly${NC}"
+        echo -ne "${YELLOW}Your choice [1-4] (default: Reboot): ${NC}"
+        read choice
+        choice=${choice:-1}
 
-    case "$choice" in
-        1)
-            cron_schedule="@reboot"
-            ;;
-        2)
-            cron_schedule="@daily"
-            ;;
-        3)
-            cron_schedule="@weekly"
-            ;;
-        4)
-            cron_schedule="@hourly"
-            ;;
-        *)
-            cron_schedule="@reboot"
-            ;;
-    esac
+        case "$choice" in
+            1)
+                cron_schedule="@reboot"
+                ;;
+            2)
+                cron_schedule="@daily"
+                ;;
+            3)
+                cron_schedule="@weekly"
+                ;;
+            4)
+                cron_schedule="@hourly"
+                ;;
+            *)
+                cron_schedule="@reboot"
+                ;;
+        esac
 
-    cron_command="${cron_schedule} \"$socat_command\""
-(crontab -l || echo "") | grep -v "$socat_command" | (cat; echo "$cron_command") | crontab -
+        cron_command="${cron_schedule} \"$socat_command\""
+    (crontab -l || echo "") | grep -v "$socat_command" | (cat; echo "$cron_command") | crontab -
 
     echo "[Unit]
 Description=socat $local_port
@@ -809,56 +810,55 @@ WantedBy=multi-user.target
     re_socat_v6() {
         Socat_install
         clear
-    echo ""
-    echo -e "${GREEN}Starting Socat reverse port forwarding over IPv6...${NC}"
-    echo ""
-    echo ""
-    echo -ne "${YELLOW}Enter the local IPv6 address (Iran): ${NC}"
-    read local_ip_ipv6
+        echo ""
+        echo -e "${GREEN}Starting Socat reverse port forwarding over IPv6...${NC}"
+        echo ""
+        echo ""
+        echo -ne "${YELLOW}Enter the local IPv6 address (Iran): ${NC}"
+        read local_ip_ipv6
 
-    # Input validation for the destination port
-    while true; do
-        echo -ne "${YELLOW}Enter the port on Kharej (config port) [1-65535]: ${NC}"
-        read destination_port_ipv6
-        if [[ $destination_port_ipv6 =~ ^[0-9]+$ && $destination_port_ipv6 -ge 1 && $destination_port_ipv6 -le 65535 ]]; then
-            break
-        else
-            echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
-        fi
-    done
+        while true; do
+            echo -ne "${YELLOW}Enter the port on Kharej (config port) [1-65535]: ${NC}"
+            read destination_port_ipv6
+            if [[ $destination_port_ipv6 =~ ^[0-9]+$ && $destination_port_ipv6 -ge 1 && $destination_port_ipv6 -le 65535 ]]; then
+                break
+            else
+                echo -e "${RED}Invalid input. Please enter a valid port number.${NC}"
+            fi
+        done
 
-    socat_command_ipv6="/usr/bin/socat TCP6-LISTEN:$destination_port_ipv6,fork,reuseaddr TCP6:[$local_ip_ipv6]:22"
+        socat_command_ipv6="/usr/bin/socat TCP6-LISTEN:$destination_port_ipv6,fork,reuseaddr TCP6:[$local_ip_ipv6]:22"
 
-    echo ""
-    echo -e "${YELLOW}Choose the cronjob schedule:${NC}"
-    echo -e "  ${GREEN}1. Reboot${NC}"
-    echo -e "  ${GREEN}2. Daily${NC}"
-    echo -e "  ${GREEN}3. Weekly${NC}"
-    echo -e "  ${GREEN}4. Hourly${NC}"
-    echo -ne "${YELLOW}Your choice [1-4] (default: Reboot): ${NC}"
-    read choice_ipv6
-    choice_ipv6=${choice_ipv6:-1}
+        echo ""
+        echo -e "${YELLOW}Choose the cronjob schedule:${NC}"
+        echo -e "  ${GREEN}1. Reboot${NC}"
+        echo -e "  ${GREEN}2. Daily${NC}"
+        echo -e "  ${GREEN}3. Weekly${NC}"
+        echo -e "  ${GREEN}4. Hourly${NC}"
+        echo -ne "${YELLOW}Your choice [1-4] (default: Reboot): ${NC}"
+        read choice_ipv6
+        choice_ipv6=${choice_ipv6:-1}
 
-    case "$choice_ipv6" in
-        1)
-            cron_schedule_ipv6="@reboot"
-            ;;
-        2)
-            cron_schedule_ipv6="@daily"
-            ;;
-        3)
-            cron_schedule_ipv6="@weekly"
-            ;;
-        4)
-            cron_schedule_ipv6="@hourly"
-            ;;
-        *)
-            cron_schedule_ipv6="@reboot"
-            ;;
-    esac
+        case "$choice_ipv6" in
+            1)
+                cron_schedule_ipv6="@reboot"
+                ;;
+            2)
+                cron_schedule_ipv6="@daily"
+                ;;
+            3)
+                cron_schedule_ipv6="@weekly"
+                ;;
+            4)
+                cron_schedule_ipv6="@hourly"
+                ;;
+            *)
+                cron_schedule_ipv6="@reboot"
+                ;;
+        esac
 
-    cron_command_ipv6="${cron_schedule_ipv6} \"$socat_command_ipv6\""
-    (crontab -l || echo "") | grep -v "$socat_command_ipv6" | (cat; echo "$cron_command_ipv6") | crontab -
+        cron_command_ipv6="${cron_schedule_ipv6} \"$socat_command_ipv6\""
+        (crontab -l || echo "") | grep -v "$socat_command_ipv6" | (cat; echo "$cron_command_ipv6") | crontab -
 
     echo "[Unit]
 Description=socat $destination_port_ipv6 (IPv6)
@@ -993,7 +993,7 @@ clear
     echo ""
     echo -e "${BLUE}$title ${NC}"
     echo ""
-    echo -e "${YELLOW}______________________________________________________${NC}"
+    printf "\e[93m+---------------------------------------------+\e[0m\n" 
   echo ""
     echo -e "${YELLOW}Docker is not installed. Installing Docker now...${NC}"
     echo ""
@@ -1091,7 +1091,7 @@ title="Configure FRP server side"
     echo ""
     echo -e "${BLUE}$title ${NC}"
     echo ""
-    echo -e "${YELLOW}______________________________________________________${NC}"
+    printf "\e[93m+---------------------------------------------+\e[0m\n" 
   echo ""
 echo -e "${MAGENTA}Please save below information to to use on your client server.${NC}"
 echo ""
@@ -1276,13 +1276,8 @@ display_frp_config() {
 while true; do
 clear
 title_text="OPIran FRP Tunnel"
-tg_title="TG-Group @OPIranCluB"
-yt_title="youtube.com/@opiran-inistitute"
 clear
 echo -e "              ${MAGENTA}${title_text}${NC}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
-echo -e "${BLUE}$tg_title ${NC}"
-echo -e "${BLUE}$yt_title  ${NC}"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
 echo -e "${CYAN}  1. ${YELLOW}Configure FRP(s) - (Kharej) or server${NC}"
@@ -1319,26 +1314,1148 @@ esac
 done
 }
 
+ipv6() {
+    prepration_ipv6() {
+    clear
+    echo -e "${YELLOW}Lets check the system before proceeding...${NC}"
+    apt-get update > /dev/null 2>&1
+
+    if ! dpkg -l | grep -q iproute2; then
+        echo -e "${YELLOW}iproute2 is not installed. Installing it now...${NC}"
+        apt-get update
+        apt-get install iproute2 -y > /dev/null 2>&1
+        if [[ $? -eq 0 ]]; then
+            echo -e "${GREEN}iproute2 has been installed.${NC}"
+        else
+            echo -e "${RED}Failed to install iproute2. Please install it manually.${NC}"
+            return
+        fi
+    fi
+        modprobe ipv6 > /dev/null 2>&1
+        echo 1 > /proc/sys/net/ipv4/ip_forward > /dev/null 2>&1
+        echo 1 > /proc/sys/net/ipv6/conf/all/forwarding > /dev/null 2>&1
+
+    if [[ $(cat /proc/sys/net/ipv4/ip_forward) -eq 0 ]]; then
+        echo -e "${RED}IPv4 forwarding is not enabled. Attempting to enable it...${NC}"
+        echo 1 > /proc/sys/net/ipv4/ip_forward
+        if [[ $? -eq 0 ]]; then
+            echo -e "${GREEN}IPv4 forwarding has been enabled.${NC}"
+        else
+            echo -e "${RED}Failed to enable IPv4 forwarding. Please enable it manually before configuring 6to4, just type below command into your terminal${NC}"
+            echo ""
+            echo -e "${YELLOW}echo 1 > /proc/sys/net/ipv4/ip_forward${NC}"
+            return
+        fi
+    fi
+
+    if [[ $(cat /proc/sys/net/ipv6/conf/all/forwarding) -eq 0 ]]; then
+        echo -e "${RED}IPv6 forwarding is not enabled. Attempting to enable it...${NC}"
+        for interface in /proc/sys/net/ipv6/conf/*/forwarding; do
+            echo 1 > "$interface"
+        done
+        if [[ $? -eq 0 ]]; then
+            echo -e "${GREEN}IPv6 forwarding has been enabled.${NC}"
+        else
+            echo -e "${RED}Failed to enable IPv6 forwarding. Please enable it manually before configuring 6to4.${NC}"
+            return
+        fi
+    fi
+}
+
+6to4_ipv6() {
+    clear
+    prepration_ipv6
+    echo ""
+    echo -e "       ${MAGENTA}Setting up 6to4 IPv6 addresses...${NC}"
+
+    echo -ne "${YELLOW}Enter the IPv4 address${NC}   "
+    read ipv4
+    ipv6_address=$(printf "2002:%02x%02x:%02x%02x::1" `echo $ipv4 | tr "." " "`)
+    echo -e "${YELLOW}IPv6to4 Address: ${GREEN}$ipv6_address ${YELLOW}was created but not configured yet for routing.${NC}"
+    echo ""
+    press_enter
+    systemctl restart networking
+    systemctl restart systemd-networkd
+    sleep 2
+    modprobe sit
+    ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
+    ip -6 link set dev tun6to4 mtu 1280
+    ip link set dev tun6to4 up
+    ip -6 addr add "$ipv6_address/16" dev tun6to4
+    ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
+    sleep 1
+    echo -e "    ${GREEN} [$ipv6_address] was added and routed successfully, please${RED} reboot ${NC}"
+    systemctl restart systemd-networkd
+    systemctl restart networking
+
+    opiran_6to4_dir="/root/opiran-6to4"
+    opiran_6to4_script="$opiran_6to4_dir/6to4"
+
+    if [ ! -d "$opiran_6to4_dir" ]; then
+        mkdir "$opiran_6to4_dir"
+    else
+        rm -f "$opiran_6to4_script"
+    fi
+
+cat << EOF | tee -a "$opiran_6to4_script" > /dev/null
+#!/bin/bash
+systemctl restart systemd-networkd
+systemctl restart networking
+modprobe sit
+ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
+ip -6 link set dev tun6to4 mtu 1280
+ip link set dev tun6to4 up
+ip -6 addr add "$ipv6_address/16" dev tun6to4
+ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
+EOF
+
+    chmod +x "$opiran_6to4_script"
+
+    (crontab -l || echo "") | grep -v "/root/opiran-6to4/6to4" | (cat; echo "@reboot /root/opiran-6to4/6to4") | crontab -
+
+    echo ""
+    echo -e "${GREEN} Everythings were successfully done.${NC}"
+    echo ""
+    echo -e "${YELLOW} Your 6to4 IP: ${GREEN} [$ipv6_address]${NC}"
+    press_enter
+}
+
+uninstall_6to4_ipv6() {
+    clear
+    systemctl restart systemd-networkd
+    sleep 1
+    echo ""
+    echo -e "     ${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
+    
+    ipv6_list=$(ip -6 addr show dev tun6to4 | grep -oP "(?<=inet6 )[0-9a-f:]+")
+    
+    if [ -z "$ipv6_list" ]; then
+        echo "No 6to4 IPv6 addresses found on the tun6to4 interface."
+        return
+    fi
+    
+    ipv6_array=($ipv6_list)
+    
+    for ((i = 0; i < ${#ipv6_array[@]}; i++)); do
+        echo "[$i]: ${ipv6_array[$i]}"
+    done
+    
+    echo ""
+    echo -ne "Enter the number of the IPv6 address to uninstall: "
+    read choice
+
+    if [[ ! "$choice" =~ ^[0-9]+$ ]]; then
+        echo "Invalid input. Please enter a valid number."
+        return
+    fi
+    
+    if ((choice < 0 || choice >= ${#ipv6_array[@]})); then
+        echo "Invalid number. Please enter a valid number within the range."
+        return
+    fi
+    
+    selected_ipv6="${ipv6_array[$choice]}"
+
+    systemctl restart networking
+    sleep 3
+    /sbin/ip -6 addr del "$selected_ipv6" dev tun6to4
+    echo ""
+    echo -e " ${YELLOW}IPv6 address $selected_ipv6 has been deleted please${RED} reboot ${YELLOW}to take action."
+}
+
+list_6to4_ipv6() {
+    clear
+    systemctl restart networking
+    sleep 1
+    echo ""
+    echo -e "     ${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
+
+    ipv6_list=$(ip -6 addr show dev tun6to4 | grep -oP "(?<=inet6 )[0-9a-f:]+")
+    
+    if [ -z "$ipv6_list" ]; then
+        echo "No 6to4 IPv6 addresses found on the tun6to4 interface."
+        return
+    fi
+    
+    ipv6_array=($ipv6_list)
+    
+    for ((i = 0; i < ${#ipv6_array[@]}; i++)); do
+        echo "[$i]: ${ipv6_array[$i]}"
+    done
+}
+
+status_6to4_ipv6() {
+    clear
+    systemctl restart systemd-networkd
+    systemctl restart networking
+        echo -e "${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
+    
+    ipv6_list=$(ip -6 addr show dev tun6to4 | grep -oP "(?<=inet6 )[0-9a-f:]+")
+    
+    if [ -z "$ipv6_list" ]; then
+        echo "No 6to4 IPv6 addresses found on the tun6to4 interface."
+        return
+    fi
+    
+    ipv6_array=($ipv6_list)
+    
+    for ipv6_address in "${ipv6_array[@]}"; do
+        if ping6 -c 1 "$ipv6_address" &> /dev/null; then
+            echo -e "${GREEN}Live${NC}: $ipv6_address"
+        else
+            echo -e "${RED}Dead${NC}: $ipv6_address"
+        fi
+    done
+
+    color yellow "crtl+c to back the menu"
+}
+
+add_extra_ipv6() {
+    clear
+    systemctl restart systemd-networkd
+    systemctl restart networking
+    prepration_ipv6
+    main_interface=$(ip route | awk '/default/ {print $5}')
+ipv6_subnets=($(ip -6 addr show dev "$main_interface" | awk '/inet6/ {print $2}' | grep -oP '[0-9a-fA-F:]+/64' | grep -v "^fe80"))
+    
+    if [ ${#ipv6_subnets[@]} -eq 0 ]; then
+        echo -e "${RED}No IPv6 subnets found on the $main_interface.${NC}"
+        return
+    fi
+    echo ""
+    echo -e "        ${MAGENTA}List of all available IPv6 subnets on $main_interface:${NC}"
+
+    for ((i=0; i<${#ipv6_subnets[@]}; i++)); do
+        echo ""
+        echo -e "${CYAN}$((i+1))${NC}) ${ipv6_subnets[i]}"
+    done
+    echo ""
+    echo -ne "${YELLOW}Choose the subnet to create IPv6 addresses from: ${NC}"
+    read selection
+
+    if [[ ! "$selection" =~ ^[0-9]+$ ]]; then
+        echo ""
+        echo -e "${RED}Invalid selection. Exiting.${NC}"
+        return
+    fi
+
+if ((selection >= 1 && selection <= ${#ipv6_subnets[@]})); then
+    local selected_subnet="${ipv6_subnets[selection-1]}"
+    ipv6_address="${selected_subnet%/*}"
+
+        last_ipv6=$(ip -6 addr show dev "$main_interface" | grep "$ipv6_prefix" | awk -F'/' '{print $1}' | tail -n 1)
+        last_number=${last_ipv6##*::}
+
+        echo ""
+        echo ""
+        echo -ne "${YELLOW}Enter the quantity of IPv6 addresses to create: ${NC}"
+        read quantity
+
+        if [[ ! "$quantity" =~ ^[0-9]+$ ]]; then
+            echo ""
+            echo -e "${RED}Invalid quantity. Exiting.${NC}"
+            return
+        fi
+
+        max_quantity=10
+
+        if ((quantity > max_quantity)); then
+            echo ""
+            echo "${RED}Quantity exceeds the maximum limit of $max_quantity. Exiting.${NC}"
+            return
+        fi
+        
+        systemctl restart systemd-networkd
+        systemctl restart networking
+
+    opiran_n6_dir="/root/opiran-n6"
+    opiran_n6_script="$opiran_n6_dir/add_extra_ipv6"
+    ipv6_file="/root/opiran-n6/ipv6-list.txt"
+
+    if [ ! -d "$opiran_n6_dir" ]; then
+        mkdir "$opiran_n6_dir"
+    else
+        rm -f "$opiran_n6_script"
+    fi
+        
+        ipv6_file="/root/opiran-n6/ipv6-list.txt"
+        > "$ipv6_file"
+
+        for ((i=last_number+1; i<=last_number+quantity; i++)); do
+            local ipv6_address="$ipv6_address::$i/64"
+            echo "$ipv6_address" >> "$ipv6_file"
+            if ip -6 addr add "$ipv6_address" dev "$main_interface"; then
+                echo ""
+                echo -e "${NC}IPv6 Address ${GREEN}$i${NC}: ${GREEN}$ipv6_address${NC} Interface (dev): ${GREEN}$main_interface${NC}"
+            else
+                echo ""
+                echo -e "${RED}Error creating IPv6 address: $ipv6_address${NC}"
+            fi
+        done
+ip -6 addr add 2a0e:0:1:3015::210/128 dev ens3
+
+cat << EOF | tee -a "$opiran_n6_script" > /dev/null
+#!/bin/bash
+systemctl restart systemd-networkd
+systemctl restart networking
+main_interface=$(ip route | awk '/default/ {print $5}')
+while IFS= read -r ipv6_address; do
+    ip -6 addr add "$ipv6_address" dev "$main_interface"
+done < "$ipv6_file"
+EOF
+
+    chmod +x "$opiran_n6_script"
+
+    (crontab -l || echo "") | grep -v "$opiran_n6_script" | { cat; echo "@reboot $opiran_n6_script"; } | crontab -
+
+        echo ""
+        echo ""
+        echo -e "IPv6 Addresses $((last_number+1))-$((last_number+quantity)) have been created successfully."
+        echo -e "The IPv6 addresses will be applied on startup."
+    else
+        echo -e "${RED}Invalid selection. No IPv6 addresses created.${NC}"
+    fi
+
+    echo ""
+    echo -e "${GREEN}IPv6 extra has been added successfully.${NC}"
+    echo -e "${GREEN}To run the service, Please reboot VPS to take action.${NC}"
+}
+
+
+delete_extra_ipv6() {
+    clear
+    systemctl restart systemd-networkd
+    systemctl restart networking
+    main_interface=$(ip route | awk '/default/ {print $5}')
+    ipv6_file="/root/opiran-n6/ipv6-list.txt"
+
+    if [ ! -f "$ipv6_file" ]; then
+        echo -e "${RED}IPv6 file not found. No IPv6 addresses to delete.${NC}"
+        return
+    fi
+
+    local ipv6_addresses=($(cat "$ipv6_file"))
+
+    if [ ${#ipv6_addresses[@]} -eq 0 ]; then
+        echo -e "${RED}No IPv6 addresses found in the file.${NC}"
+        return
+    fi
+
+    echo -e "${MAGENTA}List of IPv6 addresses:${NC}"
+
+    for ((i=0; i<${#ipv6_addresses[@]}; i++)); do
+        echo -e "${CYAN}$((i+1))${NC}) ${ipv6_addresses[i]}"
+    done
+
+    echo -ne "${YELLOW}Enter the number to delete: ${NC}"
+    read selection
+
+    if [[ ! "$selection" =~ ^[0-9]+$ ]]; then
+        echo ""
+        echo -e "${RED}Invalid selection. Exiting.${NC}"
+        return
+    fi
+
+    if ((selection >= 1 && selection <= ${#ipv6_addresses[@]})); then
+        local ipv6_address="${ipv6_addresses[selection-1]}"
+        if ip -6 addr del "$ipv6_address" dev "$main_interface"; then
+            sleep 1
+            echo -e "${NC}Deleted IPv6 address: ${GREEN}$ipv6_address${RED}"
+            sed -i "${selection}d" "$ipv6_file"
+        else
+            echo -e "${RED}Error deleting IPv6 address: $ipv6_address${NC}"
+        fi
+    else
+        echo -e "${RED}Invalid selection. No IPv6 address deleted.${NC}"
+    fi
+}
+
+list_extra_ipv6() {
+    clear
+    ipv6_file="/root/opiran-n6/ipv6-list.txt"
+
+    if [ ! -f "$ipv6_file" ]; then
+        echo -e "${RED}IPv6 file not found. No IPv6 addresses to list.${NC}"
+        return
+    fi
+
+    local ipv6_addresses=($(cat "$ipv6_file"))
+
+    if [ ${#ipv6_addresses[@]} -eq 0 ]; then
+        echo -e "${RED}No IPv6 addresses found in the file.${NC}"
+        return
+    fi
+
+    echo -e "${MAGENTA}List of all IPv6 addresses:${NC}"
+
+    for ((i=0; i<${#ipv6_addresses[@]}; i++)); do
+        echo -e "${CYAN}$((i+1))${NC}) ${ipv6_addresses[i]}"
+    done
+}
+
+status_extra_ipv6() {
+    clear
+    ipv6_file="/root/opiran-n6/ipv6-list.txt"
+
+    if [ ! -f "$ipv6_file" ]; then
+        echo -e "${RED}IPv6 file not found. No IPv6 addresses to check.${NC}"
+        return
+    fi
+
+    local ipv6_addresses=($(cat "$ipv6_file"))
+
+    if [ ${#ipv6_addresses[@]} -eq 0 ]; then
+        echo -e "${RED}No IPv6 addresses found in the file.${NC}"
+        return
+    fi
+
+    for ipv6_address in "${ipv6_addresses[@]}"; do
+        if ping6 -c 1 "$ipv6_address" &> /dev/null; then
+            echo -e "${GREEN}Live${NC}: $ipv6_address"
+        else
+            echo -e "${RED}Dead${NC}: $ipv6_address"
+        fi
+    done
+}
+
+while true; do
+clear
+title_text="Private / 6to4 / native IP(4/6)"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo -e "$MAGENTA$BOLD             ${title_text}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${CYAN}  1${NC}) ${YELLOW}6to4 IPv6${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}Add native IPV6${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}Private IPV6 (soon)${NC}"
+echo -e "${CYAN}  4${NC}) ${YELLOW}Private IPV4 (soon)${NC}"
+echo ""
+echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
+echo ""
+echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+read option
+
+    case $option in
+        1)
+        while true; do
+            clear
+            title_text="6to4 IPV6 Menu"
+            clear
+            echo ""
+            printf "\e[93m+---------------------------------------------+\e[0m\n" 
+            echo -e "                 ${MAGENTA}${title_text}${NC}"
+            printf "\e[93m+---------------------------------------------+\e[0m\n" 
+            echo ""
+            echo -e "${CYAN} 1.${NC}) ${YELLOW}Creating 6to4 IPV6${NC}"
+            echo -e "${CYAN} 2.${NC}) ${YELLOW}Deleting 6to4 IPV6${NC}"
+            echo -e "${CYAN} 3.${NC}) ${YELLOW}List of 6to4 IPV6${NC}"
+            echo -e "${CYAN} 4.${NC}) ${YELLOW}Status of 6to4 IPV6${NC}"
+            echo ""
+            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
+            echo ""
+            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
+            read choice
+
+            case $choice in
+                1)
+                6to4_ipv6
+                    ;;
+                2)
+                uninstall_6to4_ipv6
+                    ;;
+                3)
+                list_6to4_ipv6
+                    ;;
+                4)
+                status_6to4_ipv6
+                    ;;
+                0)
+                color red "Exiting..."
+                break
+                    ;;
+                *)
+                color red "Invalid option. Exiting..."
+                press_enter                   
+            esac
+        done
+        ;;
+        2)
+        while true; do
+            clear
+            title_text="Extra IPV6 Menu"
+            clear
+            echo ""
+            printf "\e[93m+---------------------------------------------+\e[0m\n" 
+            echo -e "                 ${MAGENTA}${title_text}${NC}"
+            printf "\e[93m+---------------------------------------------+\e[0m\n" 
+            echo ""
+            echo -e "${CYAN} 1${NC}) ${YELLOW}Creating Extra IPV6${NC}"
+            echo -e "${CYAN} 2${NC}) ${YELLOW}Deleting Extra IPV6${NC}"
+            echo -e "${CYAN} 3${NC}) ${YELLOW}List of all IPV6${NC}"
+            echo -e "${CYAN} 4${NC}) ${YELLOW}Status of all IPV6${NC}"
+            echo ""
+            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
+            echo ""
+            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
+            read choice
+
+            case $choice in
+                1)
+                add_extra_ipv6
+                    ;;
+                2)
+                delete_extra_ipv6
+                    ;;
+                3)
+                list_extra_ipv6
+                    ;;
+                4)
+                status_extra_ipv6
+                    ;;
+                0)
+                color red "Exiting..."
+                break
+                    ;;
+                *)
+                color red "Invalid option. Exiting..."
+                press_enter
+                    ;;                   
+            esac
+        done
+        ;;
+        0)
+        color red "Exiting..."
+        break
+        ;;
+        *)
+        color red "Invalid option. Exiting..."
+        exit 1
+        ;;
+    esac
+done
+}
+
+tunnel_broker() {
+    clear
+    color green "Creating tunnelbroker IPV6"
+    echo ""
+    color yellow "at first visit tunnelbroker.ch and create your tunnel then comeback here"
+    echo ""
+    echo -ne "${YELLOW}Enter tunnel name (tunnel-id) for tunnelbroker: ${NC}"
+    read tunnelname
+    echo ""
+    echo -ne "${YELLOW}Enter Server (website) IPV4 address: ${NC}"
+    read serveripv4addr
+    echo ""
+    echo -ne "${YELLOW}Enter your IPV4 address: ${NC}"
+    read clientipv4addr
+    echo ""
+    echo -ne "${YELLOW}Enter server (website) IPV6 address (without ::/64): ${NC}"
+    read routed64
+    echo ""
+    echo -ne "${YELLOW}Enter Client (Routed) IPV6 address (without ::/64): ${NC}"
+    read clientipv6addr
+
+sudo ip tunnel add $tunnelname mode sit remote $serveripv4addr local $clientipv4addr ttl 255
+sudo ip link set $tunnelname up
+sudo ip -6 addr add $clientipv6addr dev $tunnelname
+
+sleep 1
+
+color green "Your tunnel $tunnelname has been created!, now lets permenant its up."
+
+    if [ ! -f /etc/network/interfaces ]; then
+        color red "File /etc/network/interfaces not found. Installing ifupdown..."
+        apt-get update
+        apt-get install -y ifupdown
+    fi
+
+interfaces="/etc/network/interfaces";
+grep $TUNNELNAME $interfaces > /dev/null
+if [ $? = 0 ]; then echo "You already have an entry for the tunnel $TUNNELNAME in your $interfaces file."; exit 1; fi
+
+cat << EOF | sudo tee -a $interfaces > /dev/null
+# IPv6 via HE tunnel...
+auto $tunnelname
+iface $tunnelname inet6 v4tunnel
+    accept_ra 0
+    address $clientipv6addr
+    endpoint $serveripv4addr
+    local $clientipv4addr
+    ttl 255 
+    gateway $serveripv6addr
+EOF
+
+netplan apply > /dev/null
+
+color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr"
+
+press_enter
+}
+
+private_ip() {
+    clear
+del_private() {
+    clear
+    color green "Deleting Private IPv4/6 Configuration"
+    echo ""
+
+    main_interface=$(ip route | awk '/default/ {print $5}')
+    netplan_config="/etc/netplan/01-netcfg.yaml"
+
+    if [ ! -f "$netplan_config" ]; then
+        color red "Netplan configuration file not found. Exiting..."
+        exit 1
+    fi
+
+    echo ""
+    echo -ne "${YELLOW}Enter the name of the private interface to delete (e.g., eth1): ${NC}"
+    read privateinterface
+
+    if grep -q "$privateinterface" "$netplan_config"; then
+        sed -i "/$privateinterface:/,/addresses:/d" "$netplan_config"
+
+        netplan apply > /dev/null
+
+        if [ $? -eq 0 ]; then
+            color green "Private IP configuration for $privateinterface has been deleted successfully."
+        else
+            color red "Failed to delete Private IP configuration. Exiting..."
+            exit 1
+        fi
+    else
+        color red "No entry found for $privateinterface in the netplan configuration file."
+    fi
+
+    press_enter
+}
+
+    ipv4() {
+    clear
+    color green "Creating Private IPV4 and Configuration"
+    echo ""
+while true; do
+title_text="Private IPV4"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo -e "$MAGENTA$BOLD             ${title_text}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW}  1${NC}) ${CYAN}range IP [10.0.0.0 to 10.255.255.255] (recommended)${NC}"
+echo -e "${YELLOW}  2${NC}) ${CYAN}range IP [172.16.0.0 to 172.31.255.255]${NC}"
+echo -e "${YELLOW}  3${NC}) ${CYAN}range IP [192.168.0.0 to 192.168.255.255]${NC}"
+echo ""
+echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
+echo ""
+echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+read option
+
+    case $option in
+        1)
+        echo ""
+        echo ""
+        color magenta "!!!WARNING!!!"
+        color red "if you want tunnel 2 server together with private ip"
+        color red "they should NOT be same IP4 address"
+        color red "for example 10.1.2.3 and for 2nd server 10.1.2.4 and for 3rd server 10.1.2.5, ...."
+        color green " my suggestion is: 10.0.0.1"
+        echo ""
+        echo ""
+        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 10.0.0.1, 2, 3, ...): ${NC}"
+        read privateipv4
+        echo ""
+        ;;
+        2)
+        echo ""
+        echo ""
+        color magenta "!!!WARNING!!!"
+        color red "if you want tunnel 2 server together with private ip"
+        color red "they should NOT be same IP4 address"
+        color red "for example 172.17.18.19 and for 2nd server 172.17.18.20 and for 3rd server 172.17.18.21, ...."
+        color green " my suggestion is: 172.16.0.1"
+        echo ""
+        echo ""
+        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 172.16.0.1, 2, 3, ...): ${NC}"
+        read privateipv4
+        echo ""
+        ;;
+        3)
+        echo ""
+        echo ""
+        color magenta "!!!WARNING!!!"
+        color red "if you want tunnel 2 server together with private ip"
+        color red "they should NOT be same IP4 address"
+        color red "for example 192.168.42.42 and for 2nd server 192.168.42.43 and for 3rd server 192.168.42.44, ...."
+        color green " my suggestion is: 192.168.0.1"
+        echo ""
+        echo ""
+        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 192.168.0.1 , 2, 3, ...): ${NC}"
+        read privateipv4
+        echo ""
+        ;;
+        0)
+        color red "Exiting..."
+        break
+        ;;
+        *)
+        color red "Invalid option. Exiting..."
+        press_enter
+        ;;
+    esac
+done
+
+    echo ""
+    echo ""
+    color magenta "!! TIP !!"
+    color red "Do NOT use your main interface"
+    color red "if you want to add more private ip do NOT use repeated names"
+    echo ""
+    echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
+    read privateinterface
+    echo ""
+
+        main_interface=$(ip route | awk '/default/ {print $5}')
+
+        netplan="/etc/netplan/01-netcfg.yaml"
+        while grep -q "$main_interface" "$netplan" || grep -q "$privateinterface" "$netplan"; do
+            echo "You already have an entry for the interface $privateinterface in your $netplan file."
+            echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
+            read privateinterface
+            echo ""
+        done
+
+        configure_netplan_v4 "$privateinterface" "$privateipv4"
+    }
+    configure_netplan_v4() {
+        local privateinterface=$1
+        local privateipv4=$2
+
+        netplan_config="/etc/netplan/01-netcfg.yaml"
+        cat <<EOF | tee -a "$netplan_config" > /dev/null
+# Private IPv4
+$privateinterface:
+  dhcp4: no
+  addresses:
+    - $privateipv4/24
+EOF
+
+        netplan apply > /dev/null
+        if [ $? -eq 0 ]; then
+            color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
+        else
+            color red "Failed to add private IPv4. Exiting..."
+            exit 1
+        fi
+
+        press_enter
+    }
+    
+    ipv6() {
+    clear
+    color green "Creating Private IPV6 and Configuration"
+    echo ""
+while true; do
+title_text="Private IPV6"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo -e "$MAGENTA$BOLD             ${title_text}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW}  1${NC}) ${CYAN}fc00::/8 (similar to 10.0.0.0/8) (recommended)${NC}"
+echo -e "${YELLOW}  2${NC}) ${CYAN}fd00::/8 (similar to 192.168.0.0/16)${NC}"
+echo -e "${YELLOW}  3${NC}) ${CYAN}Enter custom IPv6 range${NC}"
+echo ""
+echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
+echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+read option
+
+case $option in
+            1)
+                echo ""
+                echo ""
+                color magenta "!!!WARNING!!!"
+                color red "If you want tunnel 2 server together with private IPv6"
+                color red "they should NOT be the same IPv6 address"
+                color red "For example, fd1d:fc98:b73e:b481::1 and for the 2nd server fd1d:fc98:b73e:b481::2 and for the 3rd server fd1d:fc98:b73e:b481::3, ...."
+                color green "My suggestion is: fd12:3456:789a:1"
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter the last part of your desired private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
+                read last_part_ipv6
+                privateipv6="fd12:3456:789a:1::$last_part_ipv6"
+                ;;
+            2)
+                echo ""
+                echo ""
+                color magenta "!!!WARNING!!!"
+                color red "If you want tunnel 2 server together with private IPv6"
+                color red "they should NOT be the same IPv6 address"
+                color red "For example, fd55:9876:5432:1::1 and for the 2nd server fd55:9876:5432:1::2 and for the 3rd server fd55:9876:5432:1::3, ...."
+                color green "My suggestion is: fd42:abcd:1234:[last_part_ipv6]"
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter the last part of your desired private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
+                read last_part_ipv6
+                privateipv6="fd42:abcd:1234:1::$last_part_ipv6"
+                ;;
+            3)
+                echo -ne "${YELLOW}Enter custom IPv6 address (e.g., fc12:3456:789a:1::1): ${NC}"
+                read privateipv6
+                ;;
+            0)
+                color red "Exiting..."
+                break
+                ;;
+            *)
+            color red "Invalid option. Exiting..."
+            press_enter
+                ;;
+        esac
+    done
+
+    echo ""
+    echo ""
+    color magenta "!! TIP !!"
+    color red "Do NOT use your main interface"
+    color red "if you want to add more private ip do NOT use repeated names"
+    echo ""
+    echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
+    read privateinterface
+    echo ""
+
+        main_interface=$(ip route | awk '/default/ {print $5}')
+
+        netplan="/etc/netplan/01-netcfg.yaml"
+        while grep -q "$main_interface" "$netplan" || grep -q "$privateinterface" "$netplan"; do
+            echo "You already have an entry for the interface $privateinterface in your $netplan file."
+            echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
+            read privateinterface
+            echo ""
+        done
+
+        configure_netplan_v6 "$privateinterface" "$privateipv6"
+    }
+
+    configure_netplan_v6() {
+        local privateinterface=$1
+        local privateipv6=$2
+
+        netplan_config="/etc/netplan/01-netcfg.yaml"
+        cat <<EOF | tee -a "$netplan_config" > /dev/null
+# Private IPv6
+$privateinterface:
+  dhcp6: no
+  addresses:
+    - $privateipv6/64
+EOF
+
+        netplan apply > /dev/null
+        if [ $? -eq 0 ]; then
+            color green "Private IPv6 was added successfully, your private IP is: $privateipv6"
+        else
+            color red "Failed to add private IPv6. Exiting..."
+            exit 1
+        fi
+
+        press_enter
+    }
+
+while true; do
+title_text="Private IP setup"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo -e "$MAGENTA$BOLD             ${title_text}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW}  1${NC}) ${CYAN}Private IPV4${NC}"
+echo -e "${YELLOW}  2${NC}) ${CYAN}Private IPV6${NC}"
+echo ""
+echo -e "${YELLOW}  4${NC}) ${CYAN}Delete private ipv4/6${NC}"
+echo ""
+echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
+echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+read option
+
+case $option in
+        1)
+        ipv4
+            ;;
+        2)
+        ipv6
+            ;;
+        4)
+        del_private
+            ;;
+        0)
+        color red "Exiting..."
+        break
+            ;;
+        *)
+        color red "Invalid option. Exiting..."
+        press_enter
+            ;;
+    esac
+done
+}
+
+tunnelbroker_proxy() {
+    clear
+    if ping6 -c3 google.com &>/dev/null; then
+  echo "Your server is ready to set up IPv6 proxies!"
+else
+  echo "Your server can't connect to IPv6 addresses."
+  echo "Please, connect ipv6 interface to your server to continue."
+  exit 1
+fi
+
+echo "↓ Routed /48 or /64 IPv6 prefix from tunnelbroker (*:*:*::/*):"
+read PROXY_NETWORK
+
+if [[ $PROXY_NETWORK == *"::/48"* ]]; then
+  PROXY_NET_MASK=48
+elif [[ $PROXY_NETWORK == *"::/64"* ]]; then
+  PROXY_NET_MASK=64
+else
+  echo "● Unsupported IPv6 prefix format: $PROXY_NETWORK"
+  exit 1
+fi
+
+echo "↓ Server IPv4 address from tunnelbroker:"
+read TUNNEL_IPV4_ADDR
+if [[ ! "$TUNNEL_IPV4_ADDR" ]]; then
+  echo "● IPv4 address can't be emty"
+  exit 1
+fi
+
+echo "↓ Proxies login (can be blank):"
+read PROXY_LOGIN
+
+if [[ "$PROXY_LOGIN" ]]; then
+  echo "↓ Proxies password:"
+  read PROXY_PASS
+  if [[ ! "PROXY_PASS" ]]; then
+    echo "● Proxies pass can't be emty"
+    exit 1
+  fi
+fi
+
+echo "↓ Port numbering start (default 1500):"
+read PROXY_START_PORT
+if [[ ! "$PROXY_START_PORT" ]]; then
+  PROXY_START_PORT=1500
+fi
+
+echo "↓ Proxies count (default 1):"
+read PROXY_COUNT
+if [[ ! "$PROXY_COUNT" ]]; then
+  PROXY_COUNT=1
+fi
+
+echo "↓ Proxies protocol (http, socks5; default http):"
+read PROXY_PROTOCOL
+if [[ PROXY_PROTOCOL != "socks5" ]]; then
+  PROXY_PROTOCOL="http"
+fi
+
+clear
+sleep 1
+PROXY_NETWORK=$(echo $PROXY_NETWORK | awk -F:: '{print $1}')
+echo "● Network: $PROXY_NETWORK"
+echo "● Network Mask: $PROXY_NET_MASK"
+HOST_IPV4_ADDR=$(hostname -I | awk '{print $1}')
+echo "● Host IPv4 address: $HOST_IPV4_ADDR"
+echo "● Tunnel IPv4 address: $TUNNEL_IPV4_ADDR"
+echo "● Proxies count: $PROXY_COUNT, starting from port: $PROXY_START_PORT"
+echo "● Proxies protocol: $PROXY_PROTOCOL"
+if [[ "$PROXY_LOGIN" ]]; then
+  echo "● Proxies login: $PROXY_LOGIN"
+  echo "● Proxies password: $PROXY_PASS"
+fi
+
+echo "-------------------------------------------------"
+echo ">-- Updating packages and installing dependencies"
+apt-get update >/dev/null 2>&1
+apt-get -y install gcc g++ make bc pwgen git >/dev/null 2>&1
+
+echo ">-- Setting up sysctl.conf"
+cat >>/etc/sysctl.conf <<END
+net.ipv6.conf.eth0.proxy_ndp=1
+net.ipv6.conf.all.proxy_ndp=1
+net.ipv6.conf.default.forwarding=1
+net.ipv6.conf.all.forwarding=1
+net.ipv6.ip_nonlocal_bind=1
+net.ipv4.ip_local_port_range=1024 64000
+net.ipv6.route.max_size=409600
+net.ipv4.tcp_max_syn_backlog=4096
+net.ipv6.neigh.default.gc_thresh3=102400
+kernel.threads-max=1200000
+kernel.max_map_count=6000000
+vm.max_map_count=6000000
+kernel.pid_max=2000000
+END
+
+echo ">-- Setting up logind.conf"
+echo "UserTasksMax=1000000" >>/etc/systemd/logind.conf
+
+echo ">-- Setting up system.conf"
+cat >>/etc/systemd/system.conf <<END
+UserTasksMax=1000000
+DefaultMemoryAccounting=no
+DefaultTasksAccounting=no
+DefaultTasksMax=1000000
+UserTasksMax=1000000
+END
+
+echo ">-- Setting up ndppd"
+cd ~
+git clone --quiet https://github.com/DanielAdolfsson/ndppd.git >/dev/null
+cd ~/ndppd
+make -k all >/dev/null 2>&1
+make -k install >/dev/null 2>&1
+cat >~/ndppd/ndppd.conf <<END
+route-ttl 30000
+proxy he-ipv6 {
+   router no
+   timeout 500
+   ttl 30000
+   rule ${PROXY_NETWORK}::/${PROXY_NET_MASK} {
+      static
+   }
+}
+END
+
+echo ">-- Setting up 3proxy"
+cd ~
+wget -q https://github.com/z3APA3A/3proxy/archive/0.8.13.tar.gz
+tar xzf 0.8.13.tar.gz
+mv ~/3proxy-0.8.13 ~/3proxy
+rm 0.8.13.tar.gz
+cd ~/3proxy
+chmod +x src/
+touch src/define.txt
+echo "#define ANONYMOUS 1" >src/define.txt
+sed -i '31r src/define.txt' src/proxy.h
+make -f Makefile.Linux >/dev/null 2>&1
+cat >~/3proxy/3proxy.cfg <<END
+#!/bin/bash
+
+daemon
+maxconn 100
+nserver 1.1.1.1
+nscache 65536
+timeouts 1 5 30 60 180 1800 15 60
+setgid 65535
+setuid 65535
+stacksize 6000
+flush
+END
+
+if [[ "$PROXY_LOGIN" ]]; then
+  cat >>~/3proxy/3proxy.cfg <<END
+auth strong
+users ${PROXY_LOGIN}:CL:${PROXY_PASS}
+allow ${PROXY_LOGIN}
+END
+else
+  cat >>~/3proxy/3proxy.cfg <<END
+auth none
+END
+fi
+
+echo ">-- Generating IPv6 addresses"
+touch ~/ip.list
+touch ~/tunnels.txt
+
+P_VALUES=(1 2 3 4 5 6 7 8 9 0 a b c d e f)
+PROXY_GENERATING_INDEX=1
+GENERATED_PROXY=""
+
+generate_proxy() {
+  a=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  b=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  c=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  d=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+  e=${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}${P_VALUES[$RANDOM % 16]}
+
+  echo "$PROXY_NETWORK:$a:$b:$c:$d$([ $PROXY_NET_MASK == 48 ] && echo ":$e" || echo "")" >>~/ip.list
+
+}
+
+while [ "$PROXY_GENERATING_INDEX" -le $PROXY_COUNT ]; do
+  generate_proxy
+  let "PROXY_GENERATING_INDEX+=1"
+done
+
+CURRENT_PROXY_PORT=${PROXY_START_PORT}
+for e in $(cat ~/ip.list); do
+  echo "$([ $PROXY_PROTOCOL == "socks5" ] && echo "socks" || echo "proxy") -6 -s0 -n -a -p$CURRENT_PROXY_PORT -i$HOST_IPV4_ADDR -e$e" >>~/3proxy/3proxy.cfg
+  echo "$PROXY_PROTOCOL://$([ "$PROXY_LOGIN" ] && echo "$PROXY_LOGIN:$PROXY_PASS@" || echo "")$HOST_IPV4_ADDR:$CURRENT_PROXY_PORT" >>~/tunnels.txt
+  let "CURRENT_PROXY_PORT+=1"
+done
+
+echo ">-- Setting up rc.local"
+cat >/etc/rc.local <<END
+#!/bin/bash
+
+ulimit -n 600000
+ulimit -u 600000
+ulimit -i 1200000
+ulimit -s 1000000
+ulimit -l 200000
+/sbin/ip addr add ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev he-ipv6
+sleep 5
+/sbin/ip -6 route add default via ${PROXY_NETWORK}::1
+/sbin/ip -6 route add local ${PROXY_NETWORK}::/${PROXY_NET_MASK} dev lo
+/sbin/ip tunnel add he-ipv6 mode sit remote ${TUNNEL_IPV4_ADDR} local ${HOST_IPV4_ADDR} ttl 255
+/sbin/ip link set he-ipv6 up
+/sbin/ip -6 route add 2000::/3 dev he-ipv6
+~/ndppd/ndppd -d -c ~/ndppd/ndppd.conf
+sleep 2
+~/3proxy/src/3proxy ~/3proxy/3proxy.cfg
+exit 0
+
+END
+
+/bin/chmod +x /etc/rc.local
+
+press_enter
+}
+
 while true; do
 clear
 title_text="Direct / Reverse Tunnels"
 tg_title="TG-Group @OPIranCluB"
 yt_title="youtube.com/@opiran-inistitute"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
-echo -e "${MAGENTA}             ${title_text}"
+echo -e "$MAGENTA$BOLD             ${title_text}"
 color blue "$tg_title"
 color blue "$yt_title"
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}SSH Tunnel (v4/6)${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
-echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (v4/6)${NC}"
-echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
-echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
-echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
-echo -e "${CYAN}  7${NC}) ${YELLOW}Private-IP (ICMP) and tunnel ${RED} (Azumi)${NC}"
+echo -e "${YELLOW}  1${NC}) ${CYAN}SSH Tunnel (v4/6)${NC}"
+echo -e "${YELLOW}  2${NC}) ${CYAN}Iptables (v4/6) (UDP+TCP)${NC}"
+echo -e "${YELLOW}  3${NC}) ${CYAN}Socat (v4/6)${NC}"
+echo -e "${YELLOW}  4${NC}) ${CYAN}Fake tls Tunnel (v4/6)${NC}"
+echo -e "${YELLOW}  5${NC}) ${CYAN}FRP (v4/6)${NC}"
+echo -e "${YELLOW}  6${NC}) ${CYAN}Udp2raw (v4/6)${NC}"
+echo -e "${YELLOW}  7${NC}) ${CYAN}ICMP methods ${RED} (Azumi)${NC}"
 echo ""
-echo -e "${CYAN} 8${NC}) ${RED}OPIran OPtimizer${NC}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW}  8${NC}) ${CYAN}Private-IP /6to4 / native ipv6 setup${NC}"
+echo -e "${YELLOW}  9${NC}) ${CYAN}Tunnel broker setup${NC}"
+echo -e "${YELLOW} 10${NC}) ${CYAN}Tunnel broker ipv6 Proxy setup${NC}"
+echo ""
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW} 11${NC}) ${CYAN}Block Iran domain and IP for all panels and nodes${NC}"
+echo -e "${YELLOW} 12${NC}) ${CYAN}Marzban Panel autorun (soon)${NC}"
+echo -e "${YELLOW} 13${NC}) ${CYAN}Marzban Node autorun (soon)${NC}"
+echo ""
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${CYAN}00${NC}) ${RED}OPIran OPtimizer${NC}"
 echo -e "${CYAN} 0${NC}) ${RED}Exit${NC}"
 echo ""
 echo ""
@@ -1383,6 +2500,18 @@ read option
         python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
         ;;
         8)
+        private_ip
+        ;;
+        9)
+        tunnel_broker
+        ;;
+        10)
+        tunnelbroker_proxy
+        ;;
+        11)
+        bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
+        ;;
+        00)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
         ;;
         0)
