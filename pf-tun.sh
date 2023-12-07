@@ -1931,6 +1931,15 @@ del_private() {
     press_enter
 }
 
+find_next_private_interface_number() {
+    main_interface=$(ip route | awk '/default/ {print $5}')
+    local interface_number=0
+    while ip link show | grep -q "${main_interface}:${interface_number}"; do
+        ((interface_number++))
+    done
+    echo $interface_number
+}
+
     ipv4() {
     clear
     color green "Creating Private IPV4 and Configuration"
@@ -2003,50 +2012,30 @@ read option
         ;;
     esac
 
-    echo ""
-    echo ""
-    color magenta "!! TIP !!"
-    color red "Do NOT use your main interface"
-    color red "if you want to add more private ip do NOT use repeated names"
-    echo ""
-    echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
-    read privateinterface
-    echo ""
+main_interface=$(ip route | awk '/default/ {print $5}')
+next_interface_number=$(find_next_private_interface_number)
+private_interface="${main_interface}:${next_interface_number}"
+startup_private_ipv4="/root/private_ipv4"
 
-        main_interface=$(ip route | awk '/default/ {print $5}')
+ifconfig $private_interface $privateipv4 netmask 255.255.255.0
+route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
 
-        netplan="/etc/netplan/01-netcfg.yaml"
-        while grep -q "$main_interface" "$netplan" || grep -q "$privateinterface" "$netplan"; do
-            echo "You already have an entry for the interface $privateinterface in your $netplan file."
-            echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
-            read privateinterface
-            echo ""
-        done
-
-        configure_netplan_v4 "$privateinterface" "$privateipv4"
-    }
-    configure_netplan_v4() {
-        local privateinterface=$1
-        local privateipv4=$2
-
-        netplan_config="/etc/netplan/01-netcfg.yaml"
-        cat <<EOF | tee -a "$netplan_config" > /dev/null
-# Private IPv4
-$privateinterface:
-  dhcp4: no
-  addresses:
-    - $privateipv4/24
+    cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
+#!/bin/bash
+systemctl restart systemd-networkd
+systemctl restart networking
+#$privateipv4
+#$private_interface
+ifconfig $private_interface $privateipv4 netmask 255.255.255.0
+route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
 EOF
 
-        netplan apply > /dev/null
-        if [ $? -eq 0 ]; then
-            color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
-        else
-            color red "Failed to add private IPv4. Exiting..."
-            exit 1
-        fi
+    chmod +x "$startup_private_ipv4"
 
-        press_enter
+    (crontab -l || echo "") | grep -v "$startup_private_ipv4" | { cat; echo "@reboot $startup_private_ipv4"; } | crontab -
+
+    color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
+    press_enter
     }
     
     ipv6() {
@@ -2110,51 +2099,31 @@ case $option in
                 ;;
         esac
 
-    echo ""
-    echo ""
-    color magenta "!! TIP !!"
-    color red "Do NOT use your main interface"
-    color red "if you want to add more private ip do NOT use repeated names"
-    echo ""
-    echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
-    read privateinterface
-    echo ""
+main_interface=$(ip route | awk '/default/ {print $5}')
+next_interface_number=$(find_next_private_interface_number)
+private_interface="${main_interface}:${next_interface_number}"
+startup_private_ipv6="/root/private_ipv6"
 
-        main_interface=$(ip route | awk '/default/ {print $5}')
+ip -6 addr add $privateipv6/64 dev $private_interface
+ip -6 route add $privateipv6/64 dev $private_interface
 
-        netplan="/etc/netplan/01-netcfg.yaml"
-        while grep -q "$main_interface" "$netplan" || grep -q "$privateinterface" "$netplan"; do
-            echo "You already have an entry for the interface $privateinterface in your $netplan file."
-            echo -ne "${YELLOW}Choose name for private interface (ex. eth1 , eth1:1, ...): ${NC}"
-            read privateinterface
-            echo ""
-        done
-
-        configure_netplan_v6 "$privateinterface" "$privateipv6"
-    }
-
-    configure_netplan_v6() {
-        local privateinterface=$1
-        local privateipv6=$2
-
-        netplan_config="/etc/netplan/01-netcfg.yaml"
-        cat <<EOF | tee -a "$netplan_config" > /dev/null
-# Private IPv6
-$privateinterface:
-  dhcp6: no
-  addresses:
-    - $privateipv6/64
+    cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
+#!/bin/bash
+systemctl restart systemd-networkd
+systemctl restart networking
+#$privateipv6
+#$private_interface
+ip -6 addr add $privateipv6/64 dev $private_interface
+ip -6 route add $privateipv6/64 dev $private_interface
 EOF
 
-        netplan apply > /dev/null
-        if [ $? -eq 0 ]; then
-            color green "Private IPv6 was added successfully, your private IP is: $privateipv6"
-        else
-            color red "Failed to add private IPv6. Exiting..."
-            exit 1
-        fi
+    chmod +x "$startup_private_ipv6"
 
-        press_enter
+    (crontab -l || echo "") | grep -v "$startup_private_ipv6" | { cat; echo "@reboot $startup_private_ipv6"; } | crontab -
+
+    color green "Private IPv6 was added successfully, your private IP is: $privateipv6"
+
+    press_enter
     }
 
 while true; do
