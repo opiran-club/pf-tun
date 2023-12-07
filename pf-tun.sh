@@ -1897,38 +1897,127 @@ press_enter
 private_ip() {
     clear
 del_private() {
+    del_v4() {
     clear
-    color green "Deleting Private IPv4/6 Configuration"
+    color green "Deleting Private IPv4 Configuration"
     echo ""
 
     main_interface=$(ip route | awk '/default/ {print $5}')
-    netplan_config="/etc/netplan/01-netcfg.yaml"
+    config="/root/private_ipv4"
 
-    if [ ! -f "$netplan_config" ]; then
-        color red "Netplan configuration file not found. Exiting..."
+    if [ ! -f "$config" ]; then
+        color red "Private IP configuration file not found. Exiting..."
         exit 1
     fi
 
+    private_interfaces=$(grep -Eo '^[[:space:]]+[a-zA-Z0-9_-]+:' "$config" | sed 's/:$//')
+
+    if [ -z "$private_interfaces" ]; then
+        color red "No private interfaces found in the configuration file."
+        exit 1
+    fi
+
+    echo -e "${YELLOW}List of Private Interfaces:${NC}"
+    echo "$private_interfaces" | nl -w2 -s') '
+
     echo ""
-    echo -ne "${YELLOW}Enter the name of the private interface to delete (e.g., eth1): ${NC}"
-    read privateinterface
+    echo -ne "${YELLOW}Enter the number of the private interface to delete: ${NC}"
+    read selected_number
 
-    if grep -q "$privateinterface" "$netplan_config"; then
-        sed -i "/$privateinterface:/,/addresses:/d" "$netplan_config"
+    selected_interface=$(echo "$private_interfaces" | sed -n "${selected_number}p")
 
-        netplan apply > /dev/null
+    if [ -n "$selected_interface" ]; then
+        sed -i "/$selected_interface:/,/addresses:/d" "$config"
+        route del -net $privateipv4 netmask 255.255.255.0 dev $selected_interface
 
-        if [ $? -eq 0 ]; then
-            color green "Private IP configuration for $privateinterface has been deleted successfully."
-        else
-            color red "Failed to delete Private IP configuration. Exiting..."
-            exit 1
-        fi
+        color green "Private IP configuration for $selected_interface has been deleted successfully."
     else
-        color red "No entry found for $privateinterface in the netplan configuration file."
+        color red "Invalid selection. Exiting..."
+        exit 1
     fi
 
     press_enter
+}
+
+del_v6() {
+    clear
+    color green "Deleting Private IPv4 Configuration"
+    echo ""
+
+    main_interface=$(ip route | awk '/default/ {print $5}')
+    config="/root/private_ipv6"
+
+    if [ ! -f "$config" ]; then
+        color red "Private IP configuration file not found. Exiting..."
+        exit 1
+    fi
+
+    private_interfaces=$(grep -Eo '^[[:space:]]+[a-zA-Z0-9_-]+:' "$config" | sed 's/:$//')
+
+    if [ -z "$private_interfaces" ]; then
+        color red "No private interfaces found in the configuration file."
+        exit 1
+    fi
+
+    echo -e "${YELLOW}List of Private Interfaces:${NC}"
+    echo "$private_interfaces" | nl -w2 -s') '
+
+    echo ""
+    echo -ne "${YELLOW}Enter the number of the private interface to delete: ${NC}"
+    read selected_number
+
+    selected_interface=$(echo "$private_interfaces" | sed -n "${selected_number}p")
+
+    if [ -n "$selected_interface" ]; then
+        sed -i "/$selected_interface:/,/addresses:/d" "$config"
+        
+        ip -6 addr del $privateipv6 dev $selected_interface
+
+        systemctl restart networking
+
+        sleep 1
+
+        color green "Private IP configuration for $selected_interface has been deleted successfully."
+    else
+        color red "Invalid selection. Exiting..."
+        exit 1
+    fi
+
+    press_enter
+}
+
+while true; do
+title_text="Private IPV4"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo -e "$MAGENTA$BOLD             ${title_text}"
+printf "\e[93m+---------------------------------------------+\e[0m\n" 
+echo ""
+echo -e "${YELLOW}  1${NC}) ${CYAN}Delete private IPV4${NC}"
+echo -e "${YELLOW}  2${NC}) ${CYAN}Delete private IPV6${NC}"
+echo ""
+echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
+echo ""
+echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+read option
+
+    case $option in
+        1)
+        del_v4
+        ;;
+        2)
+        del_v6
+        ;;
+        0)
+        color red "Exiting..."
+        break
+        ;;
+        *)
+        color red "Invalid option. Exiting..."
+        press_enter
+        ;;
+    esac
+done
 }
 
 find_next_private_interface_number() {
