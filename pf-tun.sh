@@ -271,16 +271,13 @@ ssh() {
 
 while true; do
 clear
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 printf "\e[93m|               SSH TUNNELS                   |\e[0m\n"
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 echo ""
 printf "${CYAN}  1${NC}) ${YELLOW} SSH Tunnels \e[0m\n"
 printf "${CYAN}  2${NC}) ${YELLOW} Reverse SSH Tunnels \e[0m\n"
 printf "${CYAN}  0${NC}) ${YELLOW} Main Menu \e[0m\n"
-echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n"
-
 echo ""
 echo -e "${GREEN}Select an option ${RED}[1-2]: ${NC}   "
 read option
@@ -499,16 +496,13 @@ iptables() {
 
 while true; do
 clear
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 printf "\e[93m|                IP(4/6)tables                |\e[0m\n"
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 echo ""
 printf "${CYAN}  1${NC}) ${YELLOW} IPtables (IPV4) \e[0m\n"
-printf "${CYAN}  2${NC}) ${YELLOW} IP6tables (IPV6) \e[0m\n"
+printf "${CYAN}  2${NC}) ${YELLOW} IP6tables (IPV6) ${RED} (recommended)\e[0m\n"
 printf "${CYAN}  0${NC}) ${YELLOW} Main Menu \e[0m\n"
-echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n"
-
 echo ""
 echo -e "${GREEN}Select an option ${RED}[1-2]: ${NC}   "
 read option
@@ -886,16 +880,13 @@ WantedBy=multi-user.target
 
 while true; do
 clear
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 printf "\e[93m|                 Socat Menu                  |\e[0m\n"
-printf "\e[93m+---------------------------------------------+\e[0m\n"
+printf "+---------------------------------------------+\n"
 echo ""
-printf "${CYAN}  1${NC}) ${YELLOW} Direct Socat \e[0m\n"
+printf "${CYAN}  1${NC}) ${YELLOW} Direct Socat ${RED}(recomended) \e[0m\n"
 printf "${CYAN}  2${NC}) ${YELLOW} Reverse Socat \e[0m\n"
-printf "${CYAN}  0${NC}) ${YELLOW} Main Menu \e[0m\n"
-echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n"
-
+printf "${CYAN}  0${NC}) ${YELLOW} Back \e[0m\n"
 echo ""
 echo -e "${GREEN}Select an option ${RED}[1-2]: ${NC}   "
 read option
@@ -904,16 +895,13 @@ case $option in
     1)
             while true; do
             clear
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
+            printf "+---------------------------------------------+\n"
             printf "\e[93m|              Direct Socat Menu              |\e[0m\n"
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
+            printf "+---------------------------------------------+\n"
             echo ""
             printf "${CYAN}  1${NC}) ${YELLOW} Direct Socat (IPV4) \e[0m\n"
             printf "${CYAN}  2${NC}) ${YELLOW} Direct Socat (IPV6) \e[0m\n"
-            printf "${CYAN}  0${NC}) ${YELLOW} Main Menu \e[0m\n"
-            echo ""
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
-
+            printf "${CYAN}  0${NC}) ${YELLOW} Back \e[0m\n"
             echo ""
             echo -e "${GREEN}Select an option ${RED}[1-2]: ${NC}   "
             read option
@@ -939,16 +927,13 @@ case $option in
     2)
             while true; do
             clear
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
+            printf "+---------------------------------------------+\n"
             printf "\e[93m|              Reverse Socat Menu             |\e[0m\n"
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
+            printf "+---------------------------------------------+\n"
             echo ""
             printf "${CYAN}  1${NC}) ${YELLOW} Reverse Socat (IPV4) \e[0m\n"
             printf "${CYAN}  2${NC}) ${YELLOW} Reverse Socat (IPV6) \e[0m\n"
-            printf "${CYAN}  0${NC}) ${YELLOW} Main Menu \e[0m\n"
-            echo ""
-            printf "\e[93m+---------------------------------------------+\e[0m\n"
-
+            printf "${CYAN}  0${NC}) ${YELLOW} Back \e[0m\n"
             echo ""
             echo -e "${GREEN}Select an option ${RED}[1-2]: ${NC}   "
             read option
@@ -993,7 +978,7 @@ clear
     echo ""
     echo -e "${BLUE}$title ${NC}"
     echo ""
-    printf "\e[93m+---------------------------------------------+\e[0m\n" 
+    printf "+---------------------------------------------+\n" 
   echo ""
     echo -e "${YELLOW}Docker is not installed. Installing Docker now...${NC}"
     echo ""
@@ -1091,7 +1076,7 @@ title="Configure FRP server side"
     echo ""
     echo -e "${BLUE}$title ${NC}"
     echo ""
-    printf "\e[93m+---------------------------------------------+\e[0m\n" 
+    printf "+---------------------------------------------+\n" 
   echo ""
 echo -e "${MAGENTA}Please save below information to to use on your client server.${NC}"
 echo ""
@@ -1278,16 +1263,16 @@ clear
 title_text="OPIran FRP Tunnel"
 clear
 echo -e "              ${MAGENTA}${title_text}${NC}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN}  1. ${YELLOW}Configure FRP(s) - (Kharej) or server${NC}"
 echo -e "${CYAN}  2. ${YELLOW}Configure FRP(c) - (Iran) or client${NC}"
 echo -e "${CYAN}  3. ${YELLOW}Uninstall FRP - client and server${NC}"
 echo -e "${CYAN}  4. ${YELLOW}Display FRP Configuration${NC}"
 echo ""
-echo -e "${CYAN}  0. ${RED}Main Menu${NC}"
+echo -e "${CYAN}  0. ${RED}Back${NC}"
 echo ""
-echo -ne "${YELLOW}Enter your choice: ${NC}"
+echo -ne "${GREEN}Enter your choice: ${NC}"
 read choice
 case $choice in
     1)
@@ -1718,184 +1703,6 @@ status_extra_ipv6() {
     done
 }
 
-while true; do
-clear
-title_text="Private / 6to4 / native IP(4/6)"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
-echo -e "$MAGENTA$BOLD             ${title_text}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
-echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}6to4 IPv6${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}Add native IPV6${NC}"
-echo -e "${CYAN}  3${NC}) ${YELLOW}Private IPV6 (soon)${NC}"
-echo -e "${CYAN}  4${NC}) ${YELLOW}Private IPV4 (soon)${NC}"
-echo ""
-echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
-echo ""
-echo ""
-echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
-read option
-
-    case $option in
-        1)
-        while true; do
-            clear
-            title_text="6to4 IPV6 Menu"
-            clear
-            echo ""
-            printf "\e[93m+---------------------------------------------+\e[0m\n" 
-            echo -e "                 ${MAGENTA}${title_text}${NC}"
-            printf "\e[93m+---------------------------------------------+\e[0m\n" 
-            echo ""
-            echo -e "${CYAN} 1.${NC}) ${YELLOW}Creating 6to4 IPV6${NC}"
-            echo -e "${CYAN} 2.${NC}) ${YELLOW}Deleting 6to4 IPV6${NC}"
-            echo -e "${CYAN} 3.${NC}) ${YELLOW}List of 6to4 IPV6${NC}"
-            echo -e "${CYAN} 4.${NC}) ${YELLOW}Status of 6to4 IPV6${NC}"
-            echo ""
-            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
-            echo ""
-            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
-            read choice
-
-            case $choice in
-                1)
-                6to4_ipv6
-                    ;;
-                2)
-                uninstall_6to4_ipv6
-                    ;;
-                3)
-                list_6to4_ipv6
-                    ;;
-                4)
-                status_6to4_ipv6
-                    ;;
-                0)
-                color red "Exiting..."
-                break
-                    ;;
-                *)
-                color red "Invalid option. Exiting..."
-                press_enter                   
-            esac
-        done
-        ;;
-        2)
-        while true; do
-            clear
-            title_text="Extra IPV6 Menu"
-            clear
-            echo ""
-            printf "\e[93m+---------------------------------------------+\e[0m\n" 
-            echo -e "                 ${MAGENTA}${title_text}${NC}"
-            printf "\e[93m+---------------------------------------------+\e[0m\n" 
-            echo ""
-            echo -e "${CYAN} 1${NC}) ${YELLOW}Creating Extra IPV6${NC}"
-            echo -e "${CYAN} 2${NC}) ${YELLOW}Deleting Extra IPV6${NC}"
-            echo -e "${CYAN} 3${NC}) ${YELLOW}List of all IPV6${NC}"
-            echo -e "${CYAN} 4${NC}) ${YELLOW}Status of all IPV6${NC}"
-            echo ""
-            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
-            echo ""
-            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
-            read choice
-
-            case $choice in
-                1)
-                add_extra_ipv6
-                    ;;
-                2)
-                delete_extra_ipv6
-                    ;;
-                3)
-                list_extra_ipv6
-                    ;;
-                4)
-                status_extra_ipv6
-                    ;;
-                0)
-                color red "Exiting..."
-                break
-                    ;;
-                *)
-                color red "Invalid option. Exiting..."
-                press_enter
-                    ;;                   
-            esac
-        done
-        ;;
-        0)
-        color red "Exiting..."
-        break
-        ;;
-        *)
-        color red "Invalid option. Exiting..."
-        exit 1
-        ;;
-    esac
-done
-}
-
-tunnel_broker() {
-    clear
-    color green "Creating tunnelbroker IPV6"
-    echo ""
-    color yellow "at first visit tunnelbroker.ch and create your tunnel then comeback here"
-    echo ""
-    echo -ne "${YELLOW}Enter tunnel name (tunnel-id) for tunnelbroker: ${NC}"
-    read tunnelname
-    echo ""
-    echo -ne "${YELLOW}Enter Server (website) IPV4 address: ${NC}"
-    read serveripv4addr
-    echo ""
-    echo -ne "${YELLOW}Enter your IPV4 address: ${NC}"
-    read clientipv4addr
-    echo ""
-    echo -ne "${YELLOW}Enter server (website) IPV6 address (without ::/64): ${NC}"
-    read routed64
-    echo ""
-    echo -ne "${YELLOW}Enter Client (Routed) IPV6 address (without ::/64): ${NC}"
-    read clientipv6addr
-
-sudo ip tunnel add $tunnelname mode sit remote $serveripv4addr local $clientipv4addr ttl 255
-sudo ip link set $tunnelname up
-sudo ip -6 addr add $clientipv6addr dev $tunnelname
-
-sleep 1
-
-color green "Your tunnel $tunnelname has been created!, now lets permenant its up."
-
-    if [ ! -f /etc/network/interfaces ]; then
-        color red "File /etc/network/interfaces not found. Installing ifupdown..."
-        apt-get update
-        apt-get install -y ifupdown
-    fi
-
-interfaces="/etc/network/interfaces";
-grep $TUNNELNAME $interfaces > /dev/null
-if [ $? = 0 ]; then echo "You already have an entry for the tunnel $TUNNELNAME in your $interfaces file."; exit 1; fi
-
-cat << EOF | sudo tee -a $interfaces > /dev/null
-# IPv6 via HE tunnel...
-auto $tunnelname
-iface $tunnelname inet6 v4tunnel
-    accept_ra 0
-    address $clientipv6addr
-    endpoint $serveripv4addr
-    local $clientipv4addr
-    ttl 255 
-    gateway $serveripv6addr
-EOF
-
-netplan apply > /dev/null
-
-color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr"
-
-press_enter
-}
-
-private_ip() {
-    clear
 del_private() {
     del_v4() {
     clear
@@ -1988,12 +1795,12 @@ del_v6() {
 
 while true; do
 title_text="Private IPV4"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo -e "$MAGENTA$BOLD             ${title_text}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  1${NC}) ${CYAN}Delete private IPV4${NC}"
-echo -e "${YELLOW}  2${NC}) ${CYAN}Delete private IPV6${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}Delete private IPV4${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}Delete private IPV6${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
 echo ""
@@ -2034,14 +1841,14 @@ find_next_private_interface_number() {
     color green "Creating Private IPV4 and Configuration"
     echo ""
 title_text="Private IPV4"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo -e "$MAGENTA$BOLD             ${title_text}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  1${NC}) ${CYAN}range IP [10.0.0.0 to 10.255.255.255] (recommended)${NC}"
-echo -e "${YELLOW}  2${NC}) ${CYAN}range IP [172.16.0.0 to 172.31.255.255]${NC}"
-echo -e "${YELLOW}  3${NC}) ${CYAN}range IP [192.168.0.0 to 192.168.255.255]${NC}"
-echo -e "${YELLOW}  4${NC}) ${CYAN}Enter custom private IPv4${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}range IP ${NC}[10.0.0.0 to 10.255.255.255] ${RED}(recommended)${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}range IP ${NC}[172.16.0.0 to 172.31.255.255]${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}range IP ${NC}[192.168.0.0 to 192.168.255.255]${NC}"
+echo -e "${CYAN}  4${NC}) ${YELLOW}Enter custom private IPv4${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
 echo ""
@@ -2101,7 +1908,7 @@ read option
         ;;
         0)
         color red "Exiting..."
-        break
+        exit 1
         ;;
         *)
         color red "Invalid option. Exiting..."
@@ -2140,13 +1947,13 @@ EOF
     color green "Creating Private IPV6 and Configuration"
     echo ""
 title_text="Private IPV6"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo -e "$MAGENTA$BOLD             ${title_text}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  1${NC}) ${CYAN}fc00::/8 (similar to 10.0.0.0/8) (recommended)${NC}"
-echo -e "${YELLOW}  2${NC}) ${CYAN}fd00::/8 (similar to 192.168.0.0/16)${NC}"
-echo -e "${YELLOW}  3${NC}) ${CYAN}Enter custom IPv6 range${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}fc00::/8 (similar to 10.0.0.0/8) (recommended)${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}fd00::/8 (similar to 192.168.0.0/16)${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}Enter custom IPv6 range${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
 echo ""
@@ -2188,7 +1995,7 @@ case $option in
                 ;;
             0)
                 color red "Exiting..."
-                break
+                exit 1
                 ;;
             *)
             color red "Invalid option. Exiting..."
@@ -2224,41 +2031,190 @@ EOF
     }
 
 while true; do
-title_text="Private IP setup"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
-echo -e "$MAGENTA$BOLD             ${title_text}"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+clear
+title_text="Private / 6to4 / native IP(4/6)"
+printf "+---------------------------------------------+\n" 
+echo -e "$MAGENTA$BOLD          ${title_text}${NC}"
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  1${NC}) ${CYAN}Private IPV4${NC}"
-echo -e "${YELLOW}  2${NC}) ${CYAN}Private IPV6${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}6to4 IPv6 ${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}Add native IPV6 ${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}Private IPV4 ${NC}"
+echo -e "${CYAN}  4${NC}) ${YELLOW}Private IPV6 ${NC}"
 echo ""
-echo -e "${YELLOW}  4${NC}) ${CYAN}Delete private ipv4/6${NC}"
+echo -e "${CYAN}  5${NC}) ${YELLOW}Delete private ipv4/6 ${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
+echo ""
 echo ""
 echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
 read option
 
-case $option in
+    case $option in
         1)
+        while true; do
+            clear
+            title_text="6to4 IPV6 Menu"
+            clear
+            echo ""
+            printf "+---------------------------------------------+\n" 
+            echo -e "              ${MAGENTA}${title_text}${NC}"
+            printf "+---------------------------------------------+\n" 
+            echo ""
+            echo -e "${CYAN} 1.${NC}) ${YELLOW}Creating 6to4 IPV6${NC}"
+            echo -e "${CYAN} 2.${NC}) ${YELLOW}Deleting 6to4 IPV6${NC}"
+            echo -e "${CYAN} 3.${NC}) ${YELLOW}List of 6to4 IPV6${NC}"
+            echo -e "${CYAN} 4.${NC}) ${YELLOW}Status of 6to4 IPV6${NC}"
+            echo ""
+            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
+            echo ""
+            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
+            read choice
+
+            case $choice in
+                1)
+                6to4_ipv6
+                    ;;
+                2)
+                uninstall_6to4_ipv6
+                    ;;
+                3)
+                list_6to4_ipv6
+                    ;;
+                4)
+                status_6to4_ipv6
+                    ;;
+                0)
+                color red "Exiting..."
+                break
+                    ;;
+                *)
+                color red "Invalid option. Exiting..."
+                press_enter                   
+            esac
+        done
+        ;;
+        2)
+        while true; do
+            clear
+            title_text="Extra IPV6 Menu"
+            clear
+            echo ""
+            printf "+---------------------------------------------+\n" 
+            echo -e "              ${MAGENTA}${title_text}${NC}"
+            printf "+---------------------------------------------+\n" 
+            echo ""
+            echo -e "${CYAN} 1${NC}) ${YELLOW}Creating Extra IPV6${NC}"
+            echo -e "${CYAN} 2${NC}) ${YELLOW}Deleting Extra IPV6${NC}"
+            echo -e "${CYAN} 3${NC}) ${YELLOW}List of all IPV6${NC}"
+            echo -e "${CYAN} 4${NC}) ${YELLOW}Status of all IPV6${NC}"
+            echo ""
+            echo -e "${CYAN} 0.${NC}) ${RED}Back${NC}"
+            echo ""
+            echo -ne "${GREEN}Select an option ${RED}[1-4]: ${NC}"
+            read choice
+
+            case $choice in
+                1)
+                add_extra_ipv6
+                    ;;
+                2)
+                delete_extra_ipv6
+                    ;;
+                3)
+                list_extra_ipv6
+                    ;;
+                4)
+                status_extra_ipv6
+                    ;;
+                0)
+                color red "Exiting..."
+                break
+                    ;;
+                *)
+                color red "Invalid option. Exiting..."
+                press_enter
+                    ;;                   
+            esac
+        done
+        ;;
+        3)
         ipv4
             ;;
-        2)
+        4)
         ipv6
             ;;
-        4)
+        5)
         del_private
             ;;
         0)
         color red "Exiting..."
         break
-            ;;
+        ;;
         *)
         color red "Invalid option. Exiting..."
-        press_enter
-            ;;
+        exit 1
+        ;;
     esac
 done
+}
+
+tunnel_broker() {
+    clear
+    color green "Creating tunnelbroker IPV6"
+    echo ""
+    color yellow "at first visit tunnelbroker.ch and create your tunnel then comeback here"
+    echo ""
+    echo -ne "${YELLOW}Enter tunnel name (tunnel-id) for tunnelbroker: ${NC}"
+    read tunnelname
+    echo ""
+    echo -ne "${YELLOW}Enter Server (website) IPV4 address: ${NC}"
+    read serveripv4addr
+    echo ""
+    echo -ne "${YELLOW}Enter your IPV4 address: ${NC}"
+    read clientipv4addr
+    echo ""
+    echo -ne "${YELLOW}Enter server (website) IPV6 address (without ::/64): ${NC}"
+    read routed64
+    echo ""
+    echo -ne "${YELLOW}Enter Client (Routed) IPV6 address (without ::/64): ${NC}"
+    read clientipv6addr
+
+sudo ip tunnel add $tunnelname mode sit remote $serveripv4addr local $clientipv4addr ttl 255
+sudo ip link set $tunnelname up
+sudo ip -6 addr add $clientipv6addr dev $tunnelname
+
+sleep 1
+
+color green "Your tunnel $tunnelname has been created!, now lets permenant its up."
+
+    if [ ! -f /etc/network/interfaces ]; then
+        color red "File /etc/network/interfaces not found. Installing ifupdown..."
+        apt-get update
+        apt-get install -y ifupdown
+    fi
+
+interfaces="/etc/network/interfaces";
+grep $TUNNELNAME $interfaces > /dev/null
+if [ $? = 0 ]; then echo "You already have an entry for the tunnel $TUNNELNAME in your $interfaces file."; exit 1; fi
+
+cat << EOF | sudo tee -a $interfaces > /dev/null
+# IPv6 via HE tunnel...
+auto $tunnelname
+iface $tunnelname inet6 v4tunnel
+    accept_ra 0
+    address $clientipv6addr
+    endpoint $serveripv4addr
+    local $clientipv4addr
+    ttl 255 
+    gateway $serveripv6addr
+EOF
+
+netplan apply > /dev/null
+
+color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr"
+
+press_enter
 }
 
 tunnelbroker_proxy() {
@@ -2494,31 +2450,31 @@ echo ""
 echo -e "$MAGENTA$BOLD             ${title_text}"
 color blue "$tg_title"
 color blue "$yt_title"
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  1${NC}) ${CYAN}SSH Tunnel (v4/6)${NC}"
-echo -e "${YELLOW}  2${NC}) ${CYAN}Iptables (v4/6) (UDP+TCP)${NC}"
-echo -e "${YELLOW}  3${NC}) ${CYAN}Socat (v4/6)${NC}"
-echo -e "${YELLOW}  4${NC}) ${CYAN}Fake tls Tunnel (v4/6)${NC}"
-echo -e "${YELLOW}  5${NC}) ${CYAN}FRP (v4/6)${NC}"
-echo -e "${YELLOW}  6${NC}) ${CYAN}Udp2raw (v4/6)${NC}"
-echo -e "${YELLOW}  7${NC}) ${CYAN}Chisel Tunnel${NC}"
-echo -e "${YELLOW}  8${NC}) ${CYAN}ICMP Tunnel${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}SSH Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
+echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (v4/6)${NC}"
+echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
+echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
+echo -e "${CYAN}  7${NC}) ${YELLOW}Chisel Tunnel${NC}"
+echo -e "${CYAN}  8${NC}) ${YELLOW}ICMP Tunnel${NC}"
 echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW}  9${NC}) ${CYAN}Private-IP /6to4 / native ipv6 setup${NC}"
-echo -e "${YELLOW} 10${NC}) ${CYAN}Tunnel broker setup${NC}"
-echo -e "${YELLOW} 11${NC}) ${CYAN}Tunnel broker ipv6 Proxy setup${NC}"
+echo -e "${CYAN}  9${NC}) ${YELLOW}Private-IP /6to4 / native ipv6 setup${NC}"
+echo -e "${CYAN} 10${NC}) ${YELLOW}Tunnel broker setup${NC}"
+echo -e "${CYAN} 11${NC}) ${YELLOW}Tunnel broker ipv6 Proxy setup${NC}"
 echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${YELLOW} 12${NC}) ${CYAN}Block Iran domain and IP for all panels and nodes${NC}"
-echo -e "${YELLOW} 13${NC}) ${CYAN}Marzban Panel autorun ${RED}(soon)${NC}"
-echo -e "${YELLOW} 14${NC}) ${CYAN}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${YELLOW} 15${NC}) ${CYAN}Azumi methods ${RED}(soon)${NC}"
+echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
+echo -e "${CYAN} 13${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 15${NC}) ${YELLOW}Azumi methods ${RED}(soon)${NC}"
 echo ""
-printf "\e[93m+---------------------------------------------+\e[0m\n" 
+printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN}16${NC})     ${RED}OPIran OPtimizer${NC}"
 echo -e "${CYAN} 0${NC})     ${RED}Exit${NC}"
@@ -2564,7 +2520,7 @@ read option
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/chisel-tunnel/main/opiran-chisel --ipv4)
         ;;
         9)
-        private_ip
+        ipv6
         ;;
         10)
         tunnel_broker
