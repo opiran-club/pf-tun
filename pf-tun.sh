@@ -1796,7 +1796,7 @@ del_v6() {
 while true; do
 title_text="Private IPV4"
 printf "+---------------------------------------------+\n" 
-echo -e "$MAGENTA$BOLD             ${title_text}"
+echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
 printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN}  1${NC}) ${YELLOW}Delete private IPV4${NC}"
@@ -1842,7 +1842,7 @@ find_next_private_interface_number() {
     echo ""
 title_text="Private IPV4"
 printf "+---------------------------------------------+\n" 
-echo -e "$MAGENTA$BOLD             ${title_text}"
+echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
 printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN}  1${NC}) ${YELLOW}range IP ${NC}[10.0.0.0 to 10.255.255.255] ${RED}(recommended)${NC}"
@@ -1947,12 +1947,13 @@ EOF
     color green "Creating Private IPV6 and Configuration"
     echo ""
 title_text="Private IPV6"
+while true; do
 printf "+---------------------------------------------+\n" 
-echo -e "$MAGENTA$BOLD             ${title_text}"
+echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}fc00::/8 (similar to 10.0.0.0/8) (recommended)${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}fd00::/8 (similar to 192.168.0.0/16)${NC}"
+echo -e "${CYAN}  1${NC}) ${YELLOW}fc00::/8 ${NC}(similar to 10.0.0.0/8) (recommended)${NC}"
+echo -e "${CYAN}  2${NC}) ${YELLOW}fd00::/8 ${NC}(similar to 192.168.0.0/16)${NC}"
 echo -e "${CYAN}  3${NC}) ${YELLOW}Enter custom IPv6 range${NC}"
 echo ""
 echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
@@ -1995,7 +1996,7 @@ case $option in
                 ;;
             0)
                 color red "Exiting..."
-                exit 1
+                break
                 ;;
             *)
             color red "Invalid option. Exiting..."
@@ -2447,7 +2448,7 @@ tg_title="TG-Group @OPIranCluB"
 yt_title="youtube.com/@opiran-inistitute"
 echo ""
 echo ""
-echo -e "$MAGENTA$BOLD             ${title_text}"
+echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
 color blue "$tg_title"
 color blue "$yt_title"
 printf "+---------------------------------------------+\n" 
@@ -2470,13 +2471,14 @@ echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
-echo -e "${CYAN} 13${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 15${NC}) ${YELLOW}Azumi methods ${RED}(soon)${NC}"
+echo -e "${CYAN} 13${NC}) ${YELLOW}Softether VPN server autorun${NC}"
+echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 15${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN}16${NC})     ${RED}OPIran OPtimizer${NC}"
+echo -e "${CYAN}17${NC})     ${RED}OPIran OPtimizer${NC}"
 echo -e "${CYAN} 0${NC})     ${RED}Exit${NC}"
 echo ""
 echo ""
@@ -2530,6 +2532,9 @@ read option
         ;;
         12)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
+        ;;
+        13)
+        bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
         ;;
         00)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
