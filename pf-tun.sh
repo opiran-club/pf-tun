@@ -2502,20 +2502,20 @@ echo -e "${YELLOW}  4${NC}) ${CYAN}Fake tls Tunnel (v4/6)${NC}"
 echo -e "${YELLOW}  5${NC}) ${CYAN}FRP (v4/6)${NC}"
 echo -e "${YELLOW}  6${NC}) ${CYAN}Udp2raw (v4/6)${NC}"
 echo -e "${YELLOW}  7${NC}) ${CYAN}Chisel Tunnel${NC}"
-echo -e "${YELLOW}  ${NC}) ${CYAN}chisel methods ${RED} (Azumi) (soon)${NC}"
-echo -e "${YELLOW}  ${NC}) ${CYAN}Kcptun methods ${RED} (Azumi) (soon)${NC}"
+echo -e "${YELLOW}  8${NC}) ${CYAN}ICMP Tunnel${NC}"
 echo ""
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
-echo -e "${YELLOW}  8${NC}) ${CYAN}Private-IP /6to4 / native ipv6 setup${NC}"
-echo -e "${YELLOW}  9${NC}) ${CYAN}Tunnel broker setup${NC}"
-echo -e "${YELLOW} 10${NC}) ${CYAN}Tunnel broker ipv6 Proxy setup${NC}"
+echo -e "${YELLOW}  9${NC}) ${CYAN}Private-IP /6to4 / native ipv6 setup${NC}"
+echo -e "${YELLOW} 10${NC}) ${CYAN}Tunnel broker setup${NC}"
+echo -e "${YELLOW} 11${NC}) ${CYAN}Tunnel broker ipv6 Proxy setup${NC}"
 echo ""
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
-echo -e "${YELLOW} 11${NC}) ${CYAN}Block Iran domain and IP for all panels and nodes${NC}"
-echo -e "${YELLOW} 12${NC}) ${CYAN}Marzban Panel autorun (soon)${NC}"
-echo -e "${YELLOW} 13${NC}) ${CYAN}Marzban Node autorun (soon)${NC}"
+echo -e "${YELLOW} 12${NC}) ${CYAN}Block Iran domain and IP for all panels and nodes${NC}"
+echo -e "${YELLOW} 13${NC}) ${CYAN}Marzban Panel autorun (soon)${NC}"
+echo -e "${YELLOW} 14${NC}) ${CYAN}Marzban Node autorun (soon)${NC}"
+echo -e "${YELLOW} 15${NC}) ${CYAN}Azumi methods ${RED}(soon)${NC}"
 echo ""
 printf "\e[93m+---------------------------------------------+\e[0m\n" 
 echo ""
@@ -2562,16 +2562,16 @@ read option
         7)
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/chisel-tunnel/main/opiran-chisel --ipv4)
         ;;
-        8)
+        9)
         private_ip
         ;;
-        9)
+        10)
         tunnel_broker
         ;;
-        10)
+        11)
         tunnelbroker_proxy
         ;;
-        11)
+        12)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
         ;;
         00)
