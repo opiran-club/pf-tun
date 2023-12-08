@@ -2479,6 +2479,8 @@ echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
 echo -e "${CYAN}17${NC})     ${RED}OPIran OPtimizer${NC}"
+echo -e "${CYAN}18${NC})     ${RED}XanMod kernel and BBRv3${NC}"
+echo -e "${CYAN}19${NC})     ${RED}Badvpn (UDPGW)${NC}"
 echo -e "${CYAN} 0${NC})     ${RED}Exit${NC}"
 echo ""
 echo ""
@@ -2536,8 +2538,14 @@ read option
         13)
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
         ;;
-        00)
+        17)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
+        ;;
+        18)
+        bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/bbrv3.sh --ipv4)
+        ;;
+        19)
+        wget -N https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/Install/udpgw.sh && bash udpgw.sh
         ;;
         0)
             echo -e "${YELLOW}Exiting.${NC}"
