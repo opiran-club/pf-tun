@@ -2501,7 +2501,7 @@ echo -e "${YELLOW}  3${NC}) ${CYAN}Socat (v4/6)${NC}"
 echo -e "${YELLOW}  4${NC}) ${CYAN}Fake tls Tunnel (v4/6)${NC}"
 echo -e "${YELLOW}  5${NC}) ${CYAN}FRP (v4/6)${NC}"
 echo -e "${YELLOW}  6${NC}) ${CYAN}Udp2raw (v4/6)${NC}"
-echo -e "${YELLOW}  7${NC}) ${CYAN}ICMP methods  ${RED} (Azumi) (soon)${NC}"
+echo -e "${YELLOW}  7${NC}) ${CYAN}Chisel Tunnel${NC}"
 echo -e "${YELLOW}  ${NC}) ${CYAN}chisel methods ${RED} (Azumi) (soon)${NC}"
 echo -e "${YELLOW}  ${NC}) ${CYAN}Kcptun methods ${RED} (Azumi) (soon)${NC}"
 echo ""
@@ -2560,8 +2560,7 @@ read option
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/wgtunnel/main/udp2raw.sh --ipv4)
         ;;
         7)
-        apt-get install python-pip -y  &&  apt-get install python3 -y && alias python=python3 && python -m pip install colorama && python -m pip install netifaces
-        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
+        bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/chisel-tunnel/main/opiran-chisel --ipv4)
         ;;
         8)
         private_ip
