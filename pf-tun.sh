@@ -2447,7 +2447,7 @@ press_enter
 chisel() {
     preparation_chisel() {
         clear
-        if ! command -v "chisel" > /dev/null; then
+        if [ ! -f "/usr/local/bin/chisel" ]; then
             color red "Chisel is not installed, let's install it"
             apt-get update
             wget https://i.jpillora.com/chisel! > /dev/null
@@ -2458,58 +2458,87 @@ chisel() {
         fi
     }
 
+chisel_key() {
+    key_path="/root/chisel_server.key"
+    chisel server --keygen ${key_path} > "${key_path}" &
+    color green "Key was generated successfully at $key_path"
+}
+
     chisel_direct_kharej() {
         clear
         echo -e "${MAGENTA}Direct chisel tunnel (Server part) ${NC}"
-        echo ""
+        echo && echo
         preparation_chisel
         echo -ne "${YELLOW}Enter Kharej (remote) port: ${NC}"
         read port
-        echo ""
-        color red "!!TIP!!"
-        color magenta "If you want to use IPv6, both servers should support IPv6."
-        echo ""
-        echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4, ${RED}2-${GREEN}IPv6] ${NC}"
-        read version
-        echo ""
+        key_path="/root/chisel_server.key"
+        service_name="direct_server_$port"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel server --keyfile $key_path --port $port --host $host --keepalive 25s"
+        description="Direct chisel tunnel server"
+
+    while true; do
+    echo 
+    echo -e "$MAGENTA$BOLD             IP version ${NC}"
+    printf "+---------------------------------------------+\n"
+    echo && echo
+    echo -e "$MAGENTA$BOLD  supported private and public ipv4 and ipv6 ${NC}"
+    echo && echo
+    color red "!!TIP!!"
+    color magenta "If you want to use IPv6, both servers should support IPv6."
+    echo && echo
+    echo -e "${CYAN}  1${NC}) ${YELLOW}IPV4${NC}"
+    echo -e "${CYAN}  2${NC}) ${YELLOW}IPV6${NC}"
+    echo
+    echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+    echo
+    echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+    read version
+
         case $version in
             1)
+                color green "You picked IPV4"
                 host="0.0.0.0"
+                chisel_key
+                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+                systemctl_enable_start "$service_name"
+                create_cronjob "$service_name"
+                color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
+                echo && echo
+                color green "Server IP: $host"
+                echo && echo
+                color green "Server Port: $port"                
+                press_enter
+                break
                 ;;
             2)
+                color green "You picked IPV6"
                 echo -ne "${YELLOW}Enter IPv6 address of Kharej (remote): ${NC}"
                 read host_kharej
                 echo ""
                 host="[$host_kharej]"
+                chisel_key
+                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+                systemctl_enable_start "$service_name"
+                create_cronjob "$service_name"
+                color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
+                echo && echo
+                color green "Server IP: $host"
+                echo && echo
+                color green "Server Port: $port"
+                press_enter
+                break
+                ;;
+            0)
+                color red "Exiting..."
+                break
                 ;;
             *)
                 echo -e "${RED}Invalid option${NC}"
                 return
                 ;;
         esac
-
-        key_path="/root/chisel_server.key"
-        key="chisel server --keygen $key_path"
-        $key > /dev/null
-        color green "Key was generated successfully at $key_path"
-
-        service_name="direct_server_$port"
-        service_file="/etc/systemd/system/${service_name}.service"
-        chisel_command="chisel server --keyfile $key_path --port $port --host $host --keepalive 25s"
-        description="Direct chisel tunnel server"
-
-        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-        systemctl_enable_start "$service_name"
-        create_cronjob "$service_name"
-        clear
-        color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
-        echo ""
-        color red "Copy this fingerprint; we will need it later."
-        echo ""
-        color green "Server IP: $host"
-        echo ""
-        color green "Server Port: $port"
-        press_enter
+    done
     }
 
     chisel_direct_iran() {
@@ -2574,7 +2603,7 @@ chisel() {
 
         service_name="direct_client_$local_port"
         service_file="/etc/systemd/system/${service_name}.service"
-        chisel_command="chisel client --keepalive 25s $local_ip:$local_port/$protocol $remote_ip:$port"
+        chisel_command="chisel client --keepalive 25s $remote_ip:$port $local_ip:$local_port/$protocol"
         description="Direct chisel tunnel client"
 
         create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
@@ -2665,51 +2694,73 @@ chisel() {
         echo -ne "${YELLOW}Enter Iran (tunnel) port: ${NC}"
         read port
         echo ""
-        color red "!!TIP!!"
-        color magenta "If you want to use IPv6, both servers should support IPv6."
-        echo ""
-        echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4 , ${RED}2-${GREEN}IPv6] ${NC}"
-        read version
-        echo ""
+        key_path="/root/chisel_server.key"
+        service_name="reverse_server_$port"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel server --keyfile $key_path --reverse --port $port --host $host --keepalive 25s"
+        description="Chisel reverse Service server"
+        while true; do
+    echo 
+    echo -e "$MAGENTA$BOLD             IP version ${NC}"
+    printf "+---------------------------------------------+\n"
+    echo && echo
+    echo -e "$MAGENTA$BOLD  supported private and public ipv4 and ipv6 ${NC}"
+    echo && echo
+    color red "!!TIP!!"
+    color magenta "If you want to use IPv6, both servers should support IPv6."
+    echo && echo
+    echo -e "${CYAN}  1${NC}) ${YELLOW}IPV4${NC}"
+    echo -e "${CYAN}  2${NC}) ${YELLOW}IPV6${NC}"
+    echo
+    echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+    echo
+    echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+    read version
+
         case $version in
             1)
+                color green "You picked IPV4"
                 host="0.0.0.0"
+                chisel_key
+                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+                systemctl_enable_start "$service_name"
+                create_cronjob "$service_name"
+                color green "Chisel server was successfully run. Let's go to your Kharej server."
+                echo && echo
+                color green "Server IP: $host"
+                echo && echo
+                color green "Server Port: $port"                
+                press_enter
+                break
                 ;;
             2)
-                echo -ne "${YELLOW}Enter IPv6 address of Iran (local): ${NC}"
+                color green "You picked IPV6"
+                echo -ne "${YELLOW}Enter IPv6 address of IRAN: ${NC}"
                 read host_kharej
                 echo ""
                 host="[$host_kharej]"
+                chisel_key
+                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+                systemctl_enable_start "$service_name"
+                create_cronjob "$service_name"
+                color green "Chisel server was successfully run. Let's go to your Kharej server."
+                echo && echo
+                color green "Server IP: $host"
+                echo && echo
+                color green "Server Port: $port"
+                press_enter
+                break
+                ;;
+            0)
+                color red "Exiting..."
+                break
                 ;;
             *)
                 echo -e "${RED}Invalid option${NC}"
                 return
                 ;;
         esac
-
-        key_path="/root/chisel_server.key"
-        key="chisel server --keygen"
-        $key "$key_path" > /dev/null
-        echo ""
-        color green "Key was generated successfully at $key_path"
-        echo ""
-
-        service_name="reverse_server_$port"
-        service_file="/etc/systemd/system/${service_name}.service"
-        chisel_command="chisel server --keyfile $key_path --reverse --port $port --host $host --keepalive 25s"
-        description="Chisel reverse Service server"
-
-        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-        systemctl_enable_start "$service_name"
-        create_cronjob "$service_name"
-
-        clear
-        color green "Chisel server was successfully run. Let's go to your Kharej (remote) server."
-        echo ""
-        color green "Server IP: $host"
-        echo ""
-        color green "Server Port: $port"
-        echo ""
+    done
     }
 
     create_systemd_service() {
@@ -2760,7 +2811,7 @@ create_cronjob() {
     echo ""
     echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
     echo ""
-    echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+    echo -ne "${GREEN}Select an option ${RED}[1-2]: ${NC}"
     read choice1
 
     case $choice1 in
@@ -2777,17 +2828,17 @@ create_cronjob() {
                 echo -e "$MAGENTA$BOLD  In this method config kharej at first ${NC}"
                 echo ""
                 echo -e "${CYAN}  1${NC}) ${YELLOW}Kharej (remote)${NC}"
-                echo -e "${CYAN}  1${NC}) ${YELLOW}Iran (local)${NC}"
+                echo -e "${CYAN}  2${NC}) ${YELLOW}Iran (local)${NC}"
                 echo ""
                 echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
                 echo ""
-                echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+                echo -ne "${GREEN}Select an option ${RED}[1-2]: ${NC}"
                 read choice1
 
                 case $choice1 in
 
                 1)
-                    chisel_direct_kharej      
+                    chisel_direct_kharej
                     ;;
                 2)
                     chisel_direct_iran
@@ -2814,11 +2865,11 @@ create_cronjob() {
         echo -e "$MAGENTA$BOLD  In this method config Iran at first ${NC}"
         echo ""
         echo -e "${CYAN}  1${NC}) ${YELLOW}Kharej (remote)${NC}"
-        echo -e "${CYAN}  1${NC}) ${YELLOW}Iran (local)${NC}"
+        echo -e "${CYAN}  2${NC}) ${YELLOW}Iran (local)${NC}"
         echo ""
         echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
         echo ""
-        echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+        echo -ne "${GREEN}Select an option ${RED}[1-2]: ${NC}"
         read choice1
 
         case $choice1 in
