@@ -2,7 +2,7 @@
 set -e
 
 color () {
-    local color =$1
+    local color=$1
     local text=$2
     
     case $color in
@@ -2493,14 +2493,14 @@ chisel() {
         $key > /dev/null
         color green "Key was generated successfully at $key_path"
 
-        service_name="direct_server"
+        service_name="direct_server_$port"
         service_file="/etc/systemd/system/${service_name}.service"
         chisel_command="chisel server --keyfile $key_path --port $port --host $host --keepalive 25s"
         description="Direct chisel tunnel server"
 
         create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
         systemctl_enable_start "$service_name"
-
+        create_cronjob "$service_name"
         clear
         color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
         echo ""
@@ -2509,19 +2509,18 @@ chisel() {
         color green "Server IP: $host"
         echo ""
         color green "Server Port: $port"
-        echo ""
-        color green "Fingerprint: "
-        cat "$key_path"
+        press_enter
     }
 
     chisel_direct_iran() {
         clear
         echo -e "${MAGENTA}Direct chisel tunnel (Client part) ${NC}"
-        echo ""
+        echo && echo
         preparation_chisel
+        echo && echo
         color red "!!TIP!!"
         color magenta "Paste the port that you copied from Kharej (remote)."
-        echo ""
+        echo && echo
         echo -ne "${YELLOW}Enter Kharej port (remote server): ${NC}"
         read port
         echo ""
@@ -2566,24 +2565,25 @@ chisel() {
                 return
                 ;;
         esac
-
+        echo && echo
+        color red "!!TIP!!"
+        color magenta "Its good idea to use same port with kharej"
+        echo
         echo -ne "${YELLOW}Enter Iran (local) port: ${NC}"
         read local_port
-        
-        echo ""
-        color green "Key was saved successfully at $key_path"
 
-        service_name="direct_client"
+        service_name="direct_client_$local_port"
         service_file="/etc/systemd/system/${service_name}.service"
         chisel_command="chisel client --keepalive 25s $local_ip:$local_port/$protocol $remote_ip:$port"
         description="Direct chisel tunnel client"
 
         create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
         systemctl_enable_start "$service_name"
-
+        create_cronjob "$service_name"
         clear
         color green "Chisel tunnel was successfully established"
         echo ""
+        press_enter
     }
 
     chisel_reverse_kharej() {
@@ -2642,17 +2642,18 @@ chisel() {
         read remote_port
         echo ""
 
-        service_name="reverse_client"
+        service_name="reverse_client_$remote_port"
         service_file="/etc/systemd/system/${service_name}.service"
         chisel_command="chisel client --keepalive 25s $remote_ip:$port R:localhost:$remote_port/$protocol"
         description="Reverse chisel service client"
 
         create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
         systemctl_enable_start "$service_name"
-
+        create_cronjob "$service_name"
         clear
         color green "Reverse chisel tunnel was successfully established"
         echo ""
+        press_enter
     }
 
     chisel_reverse_iran() {
@@ -2693,13 +2694,14 @@ chisel() {
         color green "Key was generated successfully at $key_path"
         echo ""
 
-        service_name="reverse_server"
+        service_name="reverse_server_$port"
         service_file="/etc/systemd/system/${service_name}.service"
         chisel_command="chisel server --keyfile $key_path --reverse --port $port --host $host --keepalive 25s"
         description="Chisel reverse Service server"
 
         create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
         systemctl_enable_start "$service_name"
+        create_cronjob "$service_name"
 
         clear
         color green "Chisel server was successfully run. Let's go to your Kharej (remote) server."
@@ -2737,6 +2739,12 @@ WantedBy=multi-user.target" > "$service_file"
         systemctl start "$service_name"
     }
 
+create_cronjob() {
+    local cron_schedule="@reboot"
+    local service_name="$1"
+    (crontab -l ; echo "$cron_schedule systemctl restart $service_name") | crontab -
+    color green "Cron job created successfully, restart service after every reboot"
+}
     clear
     while true; do
     title_text="Chisel Tunnel"
@@ -2786,7 +2794,7 @@ WantedBy=multi-user.target" > "$service_file"
                     ;;
                 0)
                     echo "Exiting..."
-                    exit 0
+                    break
                     ;;
                 *)
                     echo "Invalid option"
@@ -2823,7 +2831,7 @@ WantedBy=multi-user.target" > "$service_file"
                     ;;
                 0)
                     echo "Exiting..."
-                    exit 0
+                    break
                     ;;
                 *)
                     echo "Invalid option"
@@ -2833,7 +2841,7 @@ WantedBy=multi-user.target" > "$service_file"
         ;;
     0)
         echo "Exiting..."
-        exit 0
+        break
         ;;
     *)
         echo "Invalid option"
