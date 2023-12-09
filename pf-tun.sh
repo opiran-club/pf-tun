@@ -2875,7 +2875,7 @@ echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and n
 echo -e "${CYAN} 13${NC}) ${YELLOW}Softether VPN server autorun${NC}"
 echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
 echo -e "${CYAN} 15${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP] ${RED}(soon)${NC}"
+echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP]${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
