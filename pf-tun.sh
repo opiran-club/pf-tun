@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-color() {
-    local color=$1
+color () {
+    local color =$1
     local text=$2
     
     case $color in
@@ -2448,13 +2448,13 @@ chisel() {
     preparation_chisel() {
         clear
         if ! command -v "chisel" > /dev/null; then
-            color_red "Chisel is not installed, let's install it"
+            color red "Chisel is not installed, let's install it"
             apt-get update
             wget https://i.jpillora.com/chisel! > /dev/null
             bash chisel! > /dev/null
-            color_green "Latest chisel release was installed successfully"
+            color green "Latest chisel release was installed successfully"
         else
-            color_green "Chisel is already installed, let's move on to the next step"
+            color green "Chisel is already installed, let's move on to the next step"
         fi
     }
 
@@ -2466,8 +2466,8 @@ chisel() {
         echo -ne "${YELLOW}Enter Kharej (remote) port: ${NC}"
         read port
         echo ""
-        color_red "!!TIP!!"
-        color_magenta "If you want to use IPv6, both servers should support IPv6."
+        color red "!!TIP!!"
+        color magenta "If you want to use IPv6, both servers should support IPv6."
         echo ""
         echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4, ${RED}2-${GREEN}IPv6] ${NC}"
         read version
@@ -2491,7 +2491,7 @@ chisel() {
         key_path="/root/chisel_server.key"
         key="chisel server --keygen $key_path"
         $key > /dev/null
-        color_green "Key was generated successfully at $key_path"
+        color green "Key was generated successfully at $key_path"
 
         service_name="direct_server"
         service_file="/etc/systemd/system/${service_name}.service"
@@ -2502,15 +2502,15 @@ chisel() {
         systemctl_enable_start "$service_name"
 
         clear
-        color_green "Chisel server was successfully run. Let's go to your IRAN (local) server."
+        color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
         echo ""
-        color_red "Copy this fingerprint; we will need it later."
+        color red "Copy this fingerprint; we will need it later."
         echo ""
-        color_green "Server IP: $host"
+        color green "Server IP: $host"
         echo ""
-        color_green "Server Port: $port"
+        color green "Server Port: $port"
         echo ""
-        color_green "Fingerprint: "
+        color green "Fingerprint: "
         cat "$key_path"
     }
 
@@ -2519,8 +2519,8 @@ chisel() {
         echo -e "${MAGENTA}Direct chisel tunnel (Client part) ${NC}"
         echo ""
         preparation_chisel
-        color_red "!!TIP!!"
-        color_magenta "Paste the port that you copied from Kharej (remote)."
+        color red "!!TIP!!"
+        color magenta "Paste the port that you copied from Kharej (remote)."
         echo ""
         echo -ne "${YELLOW}Enter Kharej port (remote server): ${NC}"
         read port
@@ -2571,7 +2571,7 @@ chisel() {
         read local_port
         
         echo ""
-        color_green "Key was saved successfully at $key_path"
+        color green "Key was saved successfully at $key_path"
 
         service_name="direct_client"
         service_file="/etc/systemd/system/${service_name}.service"
@@ -2582,7 +2582,7 @@ chisel() {
         systemctl_enable_start "$service_name"
 
         clear
-        color_green "Chisel tunnel was successfully established"
+        color green "Chisel tunnel was successfully established"
         echo ""
     }
 
@@ -2590,11 +2590,11 @@ chisel() {
         preparation_chisel
         echo -e "${MAGENTA}Reverse chisel tunnel (Client part) ${NC}"
         echo ""
-        color_red "!!TIP!!"
-        color_magenta "Paste the port that you copied from Iran."
+        color red "!!TIP!!"
+        color magenta "Paste the port that you copied from Iran."
         echo ""
-        color_magenta "Both servers should support IPv6 if you select IPv6."
-        color_magenta "Supported private and public IP."
+        color magenta "Both servers should support IPv6 if you select IPv6."
+        color magenta "Supported private and public IP."
         echo ""
         echo -ne "${YELLOW}Enter Iran port:${RED}(recommended: 443) ${NC}"
         read port
@@ -2651,7 +2651,7 @@ chisel() {
         systemctl_enable_start "$service_name"
 
         clear
-        color_green "Reverse chisel tunnel was successfully established"
+        color green "Reverse chisel tunnel was successfully established"
         echo ""
     }
 
@@ -2664,8 +2664,8 @@ chisel() {
         echo -ne "${YELLOW}Enter Iran (tunnel) port: ${NC}"
         read port
         echo ""
-        color_red "!!TIP!!"
-        color_magenta "If you want to use IPv6, both servers should support IPv6."
+        color red "!!TIP!!"
+        color magenta "If you want to use IPv6, both servers should support IPv6."
         echo ""
         echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4 , ${RED}2-${GREEN}IPv6] ${NC}"
         read version
@@ -2690,7 +2690,7 @@ chisel() {
         key="chisel server --keygen"
         $key "$key_path" > /dev/null
         echo ""
-        color_green "Key was generated successfully at $key_path"
+        color green "Key was generated successfully at $key_path"
         echo ""
 
         service_name="reverse_server"
@@ -2702,11 +2702,11 @@ chisel() {
         systemctl_enable_start "$service_name"
 
         clear
-        color_green "Chisel server was successfully run. Let's go to your Kharej (remote) server."
+        color green "Chisel server was successfully run. Let's go to your Kharej (remote) server."
         echo ""
-        color_green "Server IP: $host"
+        color green "Server IP: $host"
         echo ""
-        color_green "Server Port: $port"
+        color green "Server Port: $port"
         echo ""
     }
 
@@ -2875,7 +2875,7 @@ echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and n
 echo -e "${CYAN} 13${NC}) ${YELLOW}Softether VPN server autorun${NC}"
 echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
 echo -e "${CYAN} 15${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP]${NC}"
+echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP] ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
@@ -2940,7 +2940,7 @@ read option
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
         ;;
         16)
-        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install colorama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
+        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install color ama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
         ;;
         17)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
