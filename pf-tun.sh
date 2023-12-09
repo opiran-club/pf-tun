@@ -1841,6 +1841,7 @@ find_next_private_interface_number() {
     color green "Creating Private IPV4 and Configuration"
     echo ""
 title_text="Private IPV4"
+while true; do
 printf "+---------------------------------------------+\n" 
 echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
 printf "+---------------------------------------------+\n" 
@@ -1940,6 +1941,7 @@ EOF
 
     color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
     press_enter
+    done
     }
     
     ipv6() {
@@ -2029,6 +2031,7 @@ EOF
     color green "Private IPv6 was added successfully, your private IP is: $privateipv6"
 
     press_enter
+    done
     }
 
 while true; do
@@ -2441,6 +2444,404 @@ END
 press_enter
 }
 
+chisel() {
+    preparation_chisel() {
+        clear
+        if ! command -v "chisel" > /dev/null; then
+            color_red "Chisel is not installed, let's install it"
+            apt-get update
+            wget https://i.jpillora.com/chisel! > /dev/null
+            bash chisel! > /dev/null
+            color_green "Latest chisel release was installed successfully"
+        else
+            color_green "Chisel is already installed, let's move on to the next step"
+        fi
+    }
+
+    chisel_direct_kharej() {
+        clear
+        echo -e "${MAGENTA}Direct chisel tunnel (Server part) ${NC}"
+        echo ""
+        preparation_chisel
+        echo -ne "${YELLOW}Enter Kharej (remote) port: ${NC}"
+        read port
+        echo ""
+        color_red "!!TIP!!"
+        color_magenta "If you want to use IPv6, both servers should support IPv6."
+        echo ""
+        echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4, ${RED}2-${GREEN}IPv6] ${NC}"
+        read version
+        echo ""
+        case $version in
+            1)
+                host="0.0.0.0"
+                ;;
+            2)
+                echo -ne "${YELLOW}Enter IPv6 address of Kharej (remote): ${NC}"
+                read host_kharej
+                echo ""
+                host="[$host_kharej]"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        key_path="/root/chisel_server.key"
+        key="chisel server --keygen $key_path"
+        $key > /dev/null
+        color_green "Key was generated successfully at $key_path"
+
+        service_name="direct_server"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel server --keyfile $key_path --port $port --host $host --keepalive 25s"
+        description="Direct chisel tunnel server"
+
+        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+        systemctl_enable_start "$service_name"
+
+        clear
+        color_green "Chisel server was successfully run. Let's go to your IRAN (local) server."
+        echo ""
+        color_red "Copy this fingerprint; we will need it later."
+        echo ""
+        color_green "Server IP: $host"
+        echo ""
+        color_green "Server Port: $port"
+        echo ""
+        color_green "Fingerprint: "
+        cat "$key_path"
+    }
+
+    chisel_direct_iran() {
+        clear
+        echo -e "${MAGENTA}Direct chisel tunnel (Client part) ${NC}"
+        echo ""
+        preparation_chisel
+        color_red "!!TIP!!"
+        color_magenta "Paste the port that you copied from Kharej (remote)."
+        echo ""
+        echo -ne "${YELLOW}Enter Kharej port (remote server): ${NC}"
+        read port
+        echo ""
+        echo -ne "${YELLOW}Enter Host address that you copied from Kharej (remote): ${NC}"
+        read host
+        echo ""
+        echo -ne "${YELLOW}Select your IP version [${RED}1-${GREEN}IPv4 , ${RED}2-${GREEN}IPv6]: ${NC}"
+        read version
+        echo ""
+        case $version in
+            1)
+                local_ip="0.0.0.0"
+                remote_ip="$host"
+                ;;
+            2)
+                echo -e "${YELLOW}Enter IPv6 address of Iran (local): ${NC}"
+                read -r local_ip
+                remote_ip="[$host]"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        echo ""
+        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP , ${RED}3-${GREEN}socks]: ${NC}"
+        read protocol
+        echo ""
+        case $protocol in
+            1)
+                protocol="tcp"
+                ;;
+            2)
+                protocol="udp"
+                ;;
+            3)
+                protocol="socks"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        echo -ne "${YELLOW}Enter Iran (local) port: ${NC}"
+        read local_port
+        
+        echo ""
+        color_green "Key was saved successfully at $key_path"
+
+        service_name="direct_client"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel client --keepalive 25s $local_ip:$local_port/$protocol $remote_ip:$port"
+        description="Direct chisel tunnel client"
+
+        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+        systemctl_enable_start "$service_name"
+
+        clear
+        color_green "Chisel tunnel was successfully established"
+        echo ""
+    }
+
+    chisel_reverse_kharej() {
+        preparation_chisel
+        echo -e "${MAGENTA}Reverse chisel tunnel (Client part) ${NC}"
+        echo ""
+        color_red "!!TIP!!"
+        color_magenta "Paste the port that you copied from Iran."
+        echo ""
+        color_magenta "Both servers should support IPv6 if you select IPv6."
+        color_magenta "Supported private and public IP."
+        echo ""
+        echo -ne "${YELLOW}Enter Iran port:${RED}(recommended: 443) ${NC}"
+        read port
+        echo ""
+        echo -ne "${YELLOW}Enter Host (IP) address that you copied from Iran: ${NC}"
+        read host
+        echo ""
+        echo -ne "${YELLOW}Select your IP version [${RED}1-${GREEN}IPv4 , ${RED}2-${GREEN}IPv6]: ${NC}"
+        read version
+        echo ""
+        case $version in
+            1)
+                remote_ip="$host"
+                ;;
+            2)
+                remote_ip="[$host]"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        echo ""
+        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP , ${RED}3-${GREEN}socks] ${RED} (recommended: TCP) : ${NC}"
+        read protocol
+        echo ""
+        case $protocol in
+            1)
+                protocol="tcp"
+                ;;
+            2)
+                protocol="udp"
+                ;;
+            3)
+                protocol="socks"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        echo -ne "${YELLOW}Enter Kharej port:${RED}(recommended: same Iran port) ${NC}"
+        read remote_port
+        echo ""
+
+        service_name="reverse_client"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel client --keepalive 25s $remote_ip:$port R:localhost:$remote_port/$protocol"
+        description="Reverse chisel service client"
+
+        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+        systemctl_enable_start "$service_name"
+
+        clear
+        color_green "Reverse chisel tunnel was successfully established"
+        echo ""
+    }
+
+    chisel_reverse_iran() {
+        clear
+        echo -e "${MAGENTA}Reverse chisel tunnel (Server part) ${NC}"
+        echo ""
+        preparation_chisel
+        echo ""
+        echo -ne "${YELLOW}Enter Iran (tunnel) port: ${NC}"
+        read port
+        echo ""
+        color_red "!!TIP!!"
+        color_magenta "If you want to use IPv6, both servers should support IPv6."
+        echo ""
+        echo -ne "${YELLOW}Enter IP version:${NC} [${RED}1-${GREEN}IPv4 , ${RED}2-${GREEN}IPv6] ${NC}"
+        read version
+        echo ""
+        case $version in
+            1)
+                host="0.0.0.0"
+                ;;
+            2)
+                echo -ne "${YELLOW}Enter IPv6 address of Iran (local): ${NC}"
+                read host_kharej
+                echo ""
+                host="[$host_kharej]"
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}"
+                return
+                ;;
+        esac
+
+        key_path="/root/chisel_server.key"
+        key="chisel server --keygen"
+        $key "$key_path" > /dev/null
+        echo ""
+        color_green "Key was generated successfully at $key_path"
+        echo ""
+
+        service_name="reverse_server"
+        service_file="/etc/systemd/system/${service_name}.service"
+        chisel_command="chisel server --keyfile $key_path --reverse --port $port --host $host --keepalive 25s"
+        description="Chisel reverse Service server"
+
+        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
+        systemctl_enable_start "$service_name"
+
+        clear
+        color_green "Chisel server was successfully run. Let's go to your Kharej (remote) server."
+        echo ""
+        color_green "Server IP: $host"
+        echo ""
+        color_green "Server Port: $port"
+        echo ""
+    }
+
+    create_systemd_service() {
+        local description="$1"
+        local service_name="$2"
+        local service_file="/etc/systemd/system/${service_name}.service"
+        local chisel_command="$3"
+
+        echo "[Unit]
+Description=$description
+After=network.target
+
+[Service]
+ExecStart=$chisel_command
+Restart=always
+RestartSec=21600
+User=root
+
+[Install]
+WantedBy=multi-user.target" > "$service_file"
+    }
+
+    systemctl_enable_start() {
+        local service_name="$1"
+        systemctl daemon-reload
+        systemctl enable "$service_name"
+        systemctl start "$service_name"
+    }
+
+    clear
+    while true; do
+    title_text="Chisel Tunnel"
+    echo ""
+    echo ""
+    echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
+    printf "+---------------------------------------------+\n"
+    echo ""
+    echo -e "$MAGENTA$BOLD  supported private and public ipv4 and ipv6 ${NC}"
+    echo ""
+    echo -e "${CYAN}  1${NC}) ${YELLOW}Chisel direct${NC}"
+    echo -e "${CYAN}  2${NC}) ${YELLOW}Chisel reverse${NC}"
+    echo ""
+    echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+    echo ""
+    echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+    read choice1
+
+    case $choice1 in
+
+    1)
+            clear
+            while true; do
+                title_text="Chisel Direct"
+                echo ""
+                echo ""
+                echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
+                printf "+---------------------------------------------+\n"
+                echo ""
+                echo -e "$MAGENTA$BOLD  In this method config kharej at first ${NC}"
+                echo ""
+                echo -e "${CYAN}  1${NC}) ${YELLOW}Kharej (remote)${NC}"
+                echo -e "${CYAN}  1${NC}) ${YELLOW}Iran (local)${NC}"
+                echo ""
+                echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+                echo ""
+                echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+                read choice1
+
+                case $choice1 in
+
+                1)
+                    chisel_direct_kharej      
+                    ;;
+                2)
+                    chisel_direct_iran
+                    ;;
+                0)
+                    echo "Exiting..."
+                    exit 0
+                    ;;
+                *)
+                    echo "Invalid option"
+                    ;;
+                esac
+            done
+        ;;
+    2)
+        clear
+        while true; do
+        title_text="Chisel Reverse"
+        echo ""
+        echo ""
+        echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
+        printf "+---------------------------------------------+\n"
+        echo ""
+        echo -e "$MAGENTA$BOLD  In this method config Iran at first ${NC}"
+        echo ""
+        echo -e "${CYAN}  1${NC}) ${YELLOW}Kharej (remote)${NC}"
+        echo -e "${CYAN}  1${NC}) ${YELLOW}Iran (local)${NC}"
+        echo ""
+        echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+        echo ""
+        echo -ne "${GREEN}Select an option ${RED}[1-0]: ${NC}"
+        read choice1
+
+        case $choice1 in
+
+                1)
+                chisel_reverse_kharej
+                    ;;
+                2)
+                chisel_reverse_iran
+                    ;;
+                0)
+                    echo "Exiting..."
+                    exit 0
+                    ;;
+                *)
+                    echo "Invalid option"
+                    ;;
+                esac
+            done
+        ;;
+    0)
+        echo "Exiting..."
+        exit 0
+        ;;
+    *)
+        echo "Invalid option"
+        ;;
+    esac
+done
+}
+
 while true; do
 clear
 title_text="Direct / Reverse Tunnels"
@@ -2460,7 +2861,7 @@ echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
 echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
 echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
 echo -e "${CYAN}  7${NC}) ${YELLOW}Chisel Tunnel${NC}"
-echo -e "${CYAN}  8${NC}) ${YELLOW}ICMP Tunnel${NC}"
+echo -e "${CYAN}  8${NC}) ${YELLOW}ICMP Tunnel ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
@@ -2474,7 +2875,7 @@ echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and n
 echo -e "${CYAN} 13${NC}) ${YELLOW}Softether VPN server autorun${NC}"
 echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
 echo -e "${CYAN} 15${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods ${RED}(soon)${NC}"
+echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP] ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
@@ -2521,7 +2922,7 @@ read option
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/wgtunnel/main/udp2raw.sh --ipv4)
         ;;
         7)
-        bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/chisel-tunnel/main/opiran-chisel --ipv4)
+        chisel
         ;;
         9)
         ipv6
@@ -2537,6 +2938,9 @@ read option
         ;;
         13)
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
+        ;;
+        16)
+        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install colorama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
         ;;
         17)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
