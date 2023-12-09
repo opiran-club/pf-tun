@@ -2476,7 +2476,7 @@ chisel_key() {
         service_file="/etc/systemd/system/${service_name}.service"
         chisel_command="chisel server --keyfile $key_path --port $port --host $host --keepalive 25s"
         description="Direct chisel tunnel server"
-
+        
     while true; do
     echo 
     echo -e "$MAGENTA$BOLD             IP version ${NC}"
@@ -2500,8 +2500,21 @@ chisel_key() {
                 color green "You picked IPV4"
                 host="0.0.0.0"
                 chisel_key
-                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-                systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
                 echo && echo
@@ -2518,8 +2531,21 @@ chisel_key() {
                 echo ""
                 host="[$host_kharej]"
                 chisel_key
-                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-                systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
                 echo && echo
@@ -2576,7 +2602,7 @@ chisel_key() {
         esac
 
         echo ""
-        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP , ${RED}3-${GREEN}socks]: ${NC}"
+        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP]: ${NC}"
         read protocol
         echo ""
         case $protocol in
@@ -2585,9 +2611,6 @@ chisel_key() {
                 ;;
             2)
                 protocol="udp"
-                ;;
-            3)
-                protocol="socks"
                 ;;
             *)
                 echo -e "${RED}Invalid option${NC}"
@@ -2648,7 +2671,7 @@ chisel_key() {
         esac
 
         echo ""
-        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP , ${RED}3-${GREEN}socks] ${RED} (recommended: TCP) : ${NC}"
+        echo -ne "${YELLOW}Select your desired protocol [${RED}1-${GREEN}TCP , ${RED}2-${GREEN}UDP] ${RED} (recommended: TCP) : ${NC}"
         read protocol
         echo ""
         case $protocol in
@@ -2657,9 +2680,6 @@ chisel_key() {
                 ;;
             2)
                 protocol="udp"
-                ;;
-            3)
-                protocol="socks"
                 ;;
             *)
                 echo -e "${RED}Invalid option${NC}"
@@ -2722,8 +2742,21 @@ chisel_key() {
                 color green "You picked IPV4"
                 host="0.0.0.0"
                 chisel_key
-                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-                systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your Kharej server."
                 echo && echo
@@ -2740,8 +2773,21 @@ chisel_key() {
                 echo ""
                 host="[$host_kharej]"
                 chisel_key
-                create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-                systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your Kharej server."
                 echo && echo
@@ -2763,39 +2809,13 @@ chisel_key() {
     done
     }
 
-    create_systemd_service() {
-        local description="$1"
-        local service_name="$2"
-        local service_file="/etc/systemd/system/${service_name}.service"
-        local chisel_command="$3"
-
-        echo "[Unit]
-Description=$description
-After=network.target
-
-[Service]
-ExecStart=$chisel_command
-Restart=always
-RestartSec=21600
-User=root
-
-[Install]
-WantedBy=multi-user.target" > "$service_file"
-    }
-
-    systemctl_enable_start() {
-        local service_name="$1"
-        systemctl daemon-reload
-        systemctl enable "$service_name"
-        systemctl start "$service_name"
-    }
-
 create_cronjob() {
     local cron_schedule="@reboot"
     local service_name="$1"
     (crontab -l ; echo "$cron_schedule systemctl restart $service_name") | crontab -
     color green "Cron job created successfully, restart service after every reboot"
 }
+
     clear
     while true; do
     title_text="Chisel Tunnel"
