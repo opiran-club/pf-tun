@@ -2460,7 +2460,7 @@ chisel() {
 
 chisel_key() {
     key_path="/root/chisel_server.key"
-    chisel server --keygen ${key_path} &
+    chisel server --keygen ${key_path} > ${key_path} &
     color green "Key was generated successfully at $key_path"
 }
 
