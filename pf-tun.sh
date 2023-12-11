@@ -2629,8 +2629,22 @@ chisel_key() {
         chisel_command="chisel client --keepalive 25s $remote_ip:$port $local_ip:$local_port/$protocol"
         description="Direct chisel tunnel client"
 
-        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-        systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
+                create_cronjob "$service_name"
         create_cronjob "$service_name"
         clear
         color green "Chisel tunnel was successfully established"
@@ -2696,8 +2710,22 @@ chisel_key() {
         chisel_command="chisel client --keepalive 25s $remote_ip:$port R:localhost:$remote_port/$protocol"
         description="Reverse chisel service client"
 
-        create_systemd_service "$description" "$service_name" "$service_file" "$chisel_command"
-        systemctl_enable_start "$service_name"
+                echo "[Unit]
+                Description=$description
+                After=network.target
+
+                [Service]
+                ExecStart=$chisel_command
+                Restart=always
+                RestartSec=21600
+                User=root
+
+                [Install]
+                WantedBy=multi-user.target" > "$service_file"
+                systemctl daemon-reload
+                systemctl enable "$service_name"
+                systemctl start "$service_name"
+                create_cronjob "$service_name"
         create_cronjob "$service_name"
         clear
         color green "Reverse chisel tunnel was successfully established"
@@ -2954,7 +2982,7 @@ echo -e "${CYAN} 12${NC}) ${YELLOW}Block Iran domain and IP for all panels and n
 echo -e "${CYAN} 13${NC}) ${YELLOW}Softether VPN server autorun${NC}"
 echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
 echo -e "${CYAN} 15${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP]${NC}"
+echo -e "${CYAN} 16${NC}) ${YELLOW}Azumi methods [ICMP] ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
