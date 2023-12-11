@@ -2460,10 +2460,11 @@ chisel() {
 
 chisel_key() {
     key_path="/root/chisel_server.key"
-    chisel server --keygen ${key_path} > "${key_path}" &
+    chisel server --keygen ${key_path} &
     color green "Key was generated successfully at $key_path"
 }
 
+chisel server --keygen /root/chisel_server.key
     chisel_direct_kharej() {
         clear
         echo -e "${MAGENTA}Direct chisel tunnel (Server part) ${NC}"
