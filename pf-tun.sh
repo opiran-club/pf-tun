@@ -1359,8 +1359,6 @@ ipv6() {
     echo -e "${YELLOW}IPv6to4 Address: ${GREEN}$ipv6_address ${YELLOW}was created but not configured yet for routing.${NC}"
     echo ""
     press_enter
-    systemctl restart networking
-    systemctl restart systemd-networkd
     sleep 2
     modprobe sit
     ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
@@ -1370,8 +1368,6 @@ ipv6() {
     ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
     sleep 1
     echo -e "    ${GREEN} [$ipv6_address] was added and routed successfully, please${RED} reboot ${NC}"
-    systemctl restart systemd-networkd
-    systemctl restart networking
 
     opiran_6to4_dir="/root/opiran-6to4"
     opiran_6to4_script="$opiran_6to4_dir/6to4"
@@ -1384,8 +1380,6 @@ ipv6() {
 
 cat << EOF | tee -a "$opiran_6to4_script" > /dev/null
 #!/bin/bash
-systemctl restart systemd-networkd
-systemctl restart networking
 modprobe sit
 ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
 ip -6 link set dev tun6to4 mtu 1280
@@ -1407,7 +1401,6 @@ EOF
 
 uninstall_6to4_ipv6() {
     clear
-    systemctl restart systemd-networkd
     sleep 1
     echo ""
     echo -e "     ${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
@@ -1441,7 +1434,6 @@ uninstall_6to4_ipv6() {
     
     selected_ipv6="${ipv6_array[$choice]}"
 
-    systemctl restart networking
     sleep 3
     /sbin/ip -6 addr del "$selected_ipv6" dev tun6to4
     echo ""
@@ -1450,7 +1442,6 @@ uninstall_6to4_ipv6() {
 
 list_6to4_ipv6() {
     clear
-    systemctl restart networking
     sleep 1
     echo ""
     echo -e "     ${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
@@ -1471,8 +1462,6 @@ list_6to4_ipv6() {
 
 status_6to4_ipv6() {
     clear
-    systemctl restart systemd-networkd
-    systemctl restart networking
         echo -e "${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
     
     ipv6_list=$(ip -6 addr show dev tun6to4 | grep -oP "(?<=inet6 )[0-9a-f:]+")
@@ -1497,8 +1486,6 @@ status_6to4_ipv6() {
 
 add_extra_ipv6() {
     clear
-    systemctl restart systemd-networkd
-    systemctl restart networking
     prepration_ipv6
     main_interface=$(ip route | awk '/default/ {print $5}')
 ipv6_subnets=($(ip -6 addr show dev "$main_interface" | awk '/inet6/ {print $2}' | grep -oP '[0-9a-fA-F:]+/64' | grep -v "^fe80"))
@@ -1581,8 +1568,6 @@ ip -6 addr add 2a0e:0:1:3015::210/128 dev ens3
 
 cat << EOF | tee -a "$opiran_n6_script" > /dev/null
 #!/bin/bash
-systemctl restart systemd-networkd
-systemctl restart networking
 main_interface=$(ip route | awk '/default/ {print $5}')
 while IFS= read -r ipv6_address; do
     ip -6 addr add "$ipv6_address" dev "$main_interface"
@@ -1609,8 +1594,6 @@ EOF
 
 delete_extra_ipv6() {
     clear
-    systemctl restart systemd-networkd
-    systemctl restart networking
     main_interface=$(ip route | awk '/default/ {print $5}')
     ipv6_file="/root/opiran-n6/ipv6-list.txt"
 
@@ -1780,7 +1763,6 @@ del_v6() {
         
         ip -6 addr del $privateipv6 dev $selected_interface
 
-        systemctl restart networking
 
         sleep 1
 
@@ -1927,8 +1909,6 @@ route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
 
     cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
 #!/bin/bash
-systemctl restart systemd-networkd
-systemctl restart networking
 #$privateipv4
 #$private_interface
 ifconfig $private_interface $privateipv4 netmask 255.255.255.0
@@ -2016,8 +1996,6 @@ ip -6 route add $privateipv6/64 dev $private_interface
 
     cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
 #!/bin/bash
-systemctl restart systemd-networkd
-systemctl restart networking
 #$privateipv6
 #$private_interface
 ip -6 addr add $privateipv6/64 dev $private_interface
