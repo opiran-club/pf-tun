@@ -131,9 +131,14 @@ echo
 echo -e "${GREEN}Select an option ${RED}[0-2]: ${NC}"   
 read option
 case $option in
+
     1)
-        apt-get install curl -y && curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash && apt-get install speedtest -y && speedtest
-        ;;
+	if command -v speedtest &>/dev/null; then
+	  speedtest
+	else
+	  apt-get install curl -y && curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash && apt-get install speedtest -y && speedtest
+	fi
+    	;;
     2)
         wget -qO- network-speed.xyz | bash -s -- -r eu
         ;;
