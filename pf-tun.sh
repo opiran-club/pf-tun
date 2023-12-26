@@ -113,21 +113,19 @@ iface $tunnelname inet6 v4tunnel
     gateway $serveripv6addr
 EOF
 
-netplan apply > /dev/null
-
-color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr"
-
+color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr, please reboot server."
 press_enter
 }
 
 while true; do
 clear
-title_text="Direct / Reverse Tunnels"
+title_text="All In One OPIran Script"
 tg_title="TG-Group @OPIranCluB"
 yt_title="youtube.com/@opiran-inistitute"
 echo ""
 echo ""
 echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
+echo
 color blue "$tg_title"
 color blue "$yt_title"
 printf "+---------------------------------------------+\n" 
