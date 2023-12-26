@@ -466,6 +466,37 @@ create_cronjob() {
     color green "Cron job created successfully, restart service after every reboot"
 }
 
+uninstall() {
+    clear
+    if [ ! -f "/usr/local/bin/chisel" ]; then
+        color red "Chisel is not installed, first install it then remove it :) "
+        press_enter
+        exit 1
+    else
+        rm -f chisel!
+        if [ -f "/root/chisel_server.key" ]; then
+            rm -f chisel_server.key
+        fi
+        rm -f /usr/local/bin/chisel
+        rm -f /etc/systemd/system/chisel.service
+        if ls /etc/systemd/system/reverse_server*.service 1> /dev/null 2>&1; then
+            systemctl stop reverse_server*.service
+            systemctl disable reverse_server*.service
+            rm -f /etc/systemd/system/reverse_server*.service
+        else
+            systemctl stop direct_client*.service
+            systemctl disable direct_client*.service
+            rm -f /etc/systemd/system/direct_client*.service
+        fi
+
+        echo
+        color green "Chisel is uninstalled successfully."
+        press_enter
+        exit 1
+    fi
+}
+
+
     clear
     while true; do
     title_text="Chisel Tunnel"
@@ -479,6 +510,7 @@ create_cronjob() {
     echo -e "${CYAN}  1${NC}) ${YELLOW}Chisel direct${NC}"
     echo -e "${CYAN}  2${NC}) ${YELLOW}Chisel reverse${NC}"
     echo ""
+    echo -e "${CYAN}  2${NC}) ${YELLOW}Uninstall chisel and delete tunnels${NC}"
     echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
     echo ""
     echo -ne "${GREEN}Select an option ${RED}[1-2]: ${NC}"
@@ -560,6 +592,9 @@ create_cronjob() {
                 esac
             done
         ;;
+    3)
+    uninstall
+    ;;
     0)
         echo "Exiting..."
         break
