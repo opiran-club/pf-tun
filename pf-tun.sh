@@ -156,7 +156,7 @@ done
 
 while true; do
 clear
-title_text="All In One OPIran Script"
+title_text="All In One OPIran Script (V.1.0.12)"
 tg_title="TG-Group @OPIranCluB"
 yt_title="youtube.com/@opiran-inistitute"
 echo ""
