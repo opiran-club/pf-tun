@@ -198,7 +198,7 @@ read option
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
         ;;
         15)
-        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install color ama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
+        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install colorama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
         ;;
         16)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
