@@ -83,6 +83,8 @@ chisel_key() {
 }
 
     chisel_direct_kharej() {
+        ipv4=wget -qO- https://ipinfo.io/ip
+        ipv6=wget -qO- https://ipv6.icanhazip.com
         clear
         echo -e "${MAGENTA}Direct chisel tunnel (Server part) ${NC}"
         echo && echo
@@ -136,7 +138,7 @@ chisel_key() {
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
                 echo && echo
-                color green "Server IP: $host"
+                color green "Server IP: $ipv4"
                 echo && echo
                 color green "Server Port: $port"                
                 press_enter
@@ -167,7 +169,7 @@ chisel_key() {
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your IRAN (local) server."
                 echo && echo
-                color green "Server IP: $host"
+                color green "Server IP: $ipv6"
                 echo && echo
                 color green "Server Port: $port"
                 press_enter
@@ -352,6 +354,8 @@ chisel_key() {
     }
 
     chisel_reverse_iran() {
+        ipv4=wget -qO- https://ipinfo.io/ip
+        ipv6=wget -qO- https://ipv6.icanhazip.com
         clear
         echo -e "${MAGENTA}Reverse chisel tunnel (Server part) ${NC}"
         echo ""
@@ -406,7 +410,7 @@ chisel_key() {
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your Kharej server."
                 echo && echo
-                color green "Server IP: $host"
+                color green "Server IP: $ipv4"
                 echo && echo
                 color green "Server Port: $port"                
                 press_enter
@@ -437,7 +441,7 @@ chisel_key() {
                 create_cronjob "$service_name"
                 color green "Chisel server was successfully run. Let's go to your Kharej server."
                 echo && echo
-                color green "Server IP: $host"
+                color green "Server IP: $ipv6"
                 echo && echo
                 color green "Server Port: $port"
                 press_enter
