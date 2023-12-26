@@ -66,7 +66,7 @@ tunnel_broker() {
     clear
     color green "Creating tunnelbroker IPV6"
     echo ""
-    color yellow "at first visit tunnelbroker.ch and create your tunnel then comeback here"
+    color yellow "at first visit tunnelbroker websites and create your tunnel then comeback here"
     echo ""
     echo -ne "${YELLOW}Enter tunnel name (tunnel-id) for tunnelbroker: ${NC}"
     read tunnelname
