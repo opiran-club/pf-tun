@@ -117,6 +117,38 @@ color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv
 press_enter
 }
 
+speedtest() {
+    clear
+while true; do
+color blue "         Speedtest"
+printf "+---------------------------------------------+\n" 
+echo ""
+echo -e "${CYAN}  1. ${YELLOW}Original speedtest script${NC}"
+echo -e "${CYAN}  2. ${YELLOW}Benchmark${NC}"
+echo
+echo -e "${CYAN}  0. ${YELLOW}Back${NC}"
+echo
+echo -e "${GREEN}Select an option ${RED}[0-2]: ${NC}"   
+read option
+case $option in
+    1)
+        apt-get install curl -y && curl -s https://packagecloud.io/install/repositories/ookla/speedtest-cli/script.deb.sh | bash && apt-get install speedtest -y && speedtest
+        ;;
+    2)
+        wget -qO- network-speed.xyz | bash -s -- -r eu
+        ;;
+    0)
+        echo -e "${YELLOW}Exiting.${NC}"
+        break
+        ;;
+    *)
+        echo -e "${RED}Invalid option.${NC}"
+        press_enter
+        ;;
+esac
+done
+}
+
 while true; do
 clear
 title_text="All In One OPIran Script"
@@ -130,34 +162,36 @@ color blue "$tg_title"
 color blue "$yt_title"
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}SSH Tunnel (v4/6)${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
-echo -e "${CYAN}  3${NC}) ${YELLOW}Socat (v4/6)${NC}"
-echo -e "${CYAN}  4${NC}) ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
-echo -e "${CYAN}  5${NC}) ${YELLOW}FRP (v4/6)${NC}"
-echo -e "${CYAN}  6${NC}) ${YELLOW}Udp2raw (v4/6)${NC}"
-echo -e "${CYAN}  7${NC}) ${YELLOW}Chisel Tunnel${NC}"
-echo -e "${CYAN}  8${NC}) ${YELLOW}ICMP Tunnel ${RED}(soon)${NC}"
+echo -e "${CYAN}  1. ${YELLOW}SSH Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  2. ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
+echo -e "${CYAN}  3. ${YELLOW}Socat (v4/6)${NC}"
+echo -e "${CYAN}  4. ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  5. ${YELLOW}FRP (v4/6)${NC}"
+echo -e "${CYAN}  6. ${YELLOW}Udp2raw (v4/6)${NC}"
+echo -e "${CYAN}  7. ${YELLOW}Chisel Tunnel${NC}"
+echo -e "${CYAN}  8. ${YELLOW}ICMP Tunnel ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN}  9${NC}) ${YELLOW}Private-IP /6to4 / native ipv6 setup${NC}"
-echo -e "${CYAN} 10${NC}) ${YELLOW}Tunnel broker setup${NC}"
+echo -e "${CYAN}  9. ${YELLOW}Private-IP /6to4 / native ipv6 setup${NC}"
+echo -e "${CYAN} 10. ${YELLOW}Tunnel broker setup${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN} 11${NC}) ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
-echo -e "${CYAN} 12${NC}) ${YELLOW}Softether VPN server autorun${NC}"
-echo -e "${CYAN} 13${NC}) ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 14${NC}) ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 15${NC}) ${YELLOW}Azumi methods [ICMP]${NC}"
+echo -e "${CYAN} 11. ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
+echo -e "${CYAN} 12. ${YELLOW}Softether VPN server autorun${NC}"
+echo -e "${CYAN} 13. ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 14. ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 15. ${YELLOW}Azumi methods [ICMP]${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN} 16${NC})    ${RED}OPIran OPtimizer${NC}"
-echo -e "${CYAN} 17${NC})    ${RED}XanMod kernel and BBRv3${NC}"
-echo -e "${CYAN} 18${NC})    ${RED}Badvpn (UDPGW)${NC}"
-echo -e "${CYAN} 0${NC})     ${RED}Exit${NC}"
+echo -e "${CYAN} 16.    ${RED}OPIran OPtimizer${NC}"
+echo -e "${CYAN} 17.    ${RED}XanMod kernel and BBRv3${NC}"
+echo -e "${CYAN} 18.    ${RED}Badvpn (UDPGW)${NC}"
+echo -e "${CYAN} 19.    ${RED}Speedtest${NC}"
+echo
+echo -e "${CYAN} 0.     ${RED}Exit${NC}"
 echo ""
 echo ""
 echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
@@ -208,6 +242,9 @@ read option
         ;;
         18)
         wget -N https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/Install/udpgw.sh && bash udpgw.sh
+        ;;
+        19)
+        speedtest
         ;;
         0)
             echo -e "${YELLOW}Exiting.${NC}"
