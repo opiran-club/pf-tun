@@ -690,7 +690,6 @@ route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
     cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
 #!/bin/bash
 systemctl restart systemd-networkd
-systemctl restart networking
 #$privateipv4
 #$private_interface
 ifconfig $private_interface $privateipv4 netmask 255.255.255.0
@@ -776,10 +775,9 @@ startup_private_ipv6="/root/private_ipv6"
 ip -6 addr add $privateipv6/64 dev $private_interface
 ip -6 route add $privateipv6/64 dev $private_interface
 
-    cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
+    cat << EOF | tee -a "$startup_private_ipv6" > /dev/null
 #!/bin/bash
 systemctl restart systemd-networkd
-systemctl restart networking
 #$privateipv6
 #$private_interface
 ip -6 addr add $privateipv6/64 dev $private_interface
