@@ -597,113 +597,118 @@ find_next_private_interface_number() {
     done
     echo $interface_number
 }
-
-    ipv4() {
+        
+ipv4() {
     clear
     color green "Creating Private IPV4 and Configuration"
     echo ""
-title_text="Private IPV4"
-while true; do
-printf "+---------------------------------------------+\n" 
-echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
-printf "+---------------------------------------------+\n" 
-echo ""
-echo -e "${CYAN}  1${NC}) ${YELLOW}range IP ${NC}[10.0.0.0 to 10.255.255.255] ${RED}(recommended)${NC}"
-echo -e "${CYAN}  2${NC}) ${YELLOW}range IP ${NC}[172.16.0.0 to 172.31.255.255]${NC}"
-echo -e "${CYAN}  3${NC}) ${YELLOW}range IP ${NC}[192.168.0.0 to 192.168.255.255]${NC}"
-echo -e "${CYAN}  4${NC}) ${YELLOW}Enter custom private IPv4${NC}"
-echo ""
-echo -e "${CYAN} 0${NC}) ${RED}Back${NC}"
-echo ""
-echo ""
-echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
-read option
 
-    case $option in
-        1)
+    title_text="Private IPV4"
+    
+    while true; do
+        printf "+---------------------------------------------+\n" 
+        echo -e "$MAGENTA$BOLD             ${title_text} ${NC}"
+        printf "+---------------------------------------------+\n" 
         echo ""
-        echo ""
-        color magenta "!!!WARNING!!!"
-        color red "if you want tunnel 2 server together with private ip"
-        color red "they should NOT be same IP4 address"
-        color red "for example 10.1.2.3 and for 2nd server 10.1.2.4 and for 3rd server 10.1.2.5, ...."
-        color green " my suggestion is: 10.0.0.1"
-        echo ""
-        echo ""
-        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 10.0.0.1, 2, 3, ...): ${NC}"
-        read privateipv4
-        echo ""
-        ;;
-        2)
-        echo ""
-        echo ""
-        color magenta "!!!WARNING!!!"
-        color red "if you want tunnel 2 server together with private ip"
-        color red "they should NOT be same IP4 address"
-        color red "for example 172.17.18.19 and for 2nd server 172.17.18.20 and for 3rd server 172.17.18.21, ...."
-        color green " my suggestion is: 172.16.0.1"
-        echo ""
-        echo ""
-        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 172.16.0.1, 2, 3, ...): ${NC}"
-        read privateipv4
-        echo ""
-        ;;
-        3)
-        echo ""
-        echo ""
-        color magenta "!!!WARNING!!!"
-        color red "if you want tunnel 2 server together with private ip"
-        color red "they should NOT be same IP4 address"
-        color red "for example 192.168.42.42 and for 2nd server 192.168.42.43 and for 3rd server 192.168.42.44, ...."
-        color green " my suggestion is: 192.168.0.1"
-        echo ""
-        echo ""
-        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 192.168.0.1 , 2, 3, ...): ${NC}"
-        read privateipv4
-        echo ""
-        ;;
-        4)
-        echo ""
-        echo ""
-        echo -ne "${YELLOW}Enter your desire private ipv4 address (ex. 192.168.0.1 , 2, 3, ...): ${NC}"
-        read privateipv4
-        echo ""
-        ;;
-        0)
-        color red "Exiting..."
-        exit 1
-        ;;
-        *)
-        color red "Invalid option. Exiting..."
-        press_enter
-        ;;
-    esac
+        echo -e "${CYAN}  1${NC}) ${YELLOW}Range IP ${NC}[10.0.0.0 to 10.255.255.255] ${RED}(recommended)${NC}"
+        echo -e "${CYAN}  2${NC}) ${YELLOW}Range IP ${NC}[172.16.0.0 to 172.31.255.255]${NC}"
+        echo -e "${CYAN}  3${NC}) ${YELLOW}Range IP ${NC}[192.168.0.0 to 192.168.255.255]${NC}"
+        echo -e "${CYAN}  4${NC}) ${YELLOW}Enter custom private IPv4${NC}"
+        echo -e "${CYAN}  0${NC}) ${RED}Back${NC}"
+        echo -e "${GREEN}Select an option ${RED}[1-4]: ${NC}   "
+        read option
 
-main_interface=$(ip route | awk '/default/ {print $5}')
-next_interface_number=$(find_next_private_interface_number)
-private_interface="${main_interface}:${next_interface_number}"
-startup_private_ipv4="/root/private_ipv4"
+        case $option in
+            1)
+                echo ""
+                echo ""
+                color magenta "!!!WARNING!!!"
+                color red "If you want tunnel 2 server together with a private IP"
+                color red "they should NOT have the same IPv4 address"
+                color red "For example, 10.1.2.3 and for the 2nd server 10.1.2.4, and for the 3rd server 10.1.2.5, ...."
+                color green "My suggestion is: 10.0.0.[Last_part]"
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address (ex. 1, 2, 3, ...): ${NC}"
+                read privateipv4
+                echo ""
+                ;;
+            2)
+                echo ""
+                echo ""
+                color magenta "!!!WARNING!!!"
+                color red "If you want tunnel 2 server together with a private IP"
+                color red "they should NOT have the same IPv4 address"
+                color red "For example, 172.17.18.19 and for the 2nd server 172.17.18.20, and for the 3rd server 172.17.18.21, ...."
+                color green "My suggestion is: 172.16.0.[Last_part]"
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address  (ex. 1, 2, 3, ...): ${NC}"
+                read privateipv4
+                echo ""
+                ;;
+            3)
+                echo ""
+                echo ""
+                color magenta "!!!WARNING!!!"
+                color red "If you want tunnel 2 server together with a private IP"
+                color red "they should NOT have the same IPv4 address"
+                color red "For example, 192.168.42.42 and for the 2nd server 192.168.42.43, and for the 3rd server 192.168.42.44, ...."
+                color green "My suggestion is: 192.168.0.[Last_part]"
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address  (ex. 1, 2, 3, ...): ${NC}"
+                read privateipv4
+                echo ""
+                ;;
+            4)
+                echo ""
+                echo ""
+                echo -ne "${YELLOW}Enter your desired private IPv4 address (ex. 192.168.0.1 , 172.17.18.19, 10.1.2.3, ...): ${NC}"
+                read privateipv4
+                echo ""
+                ;;
+            0)
+                color red "Exiting..."
+                exit 1
+                ;;
+            *)
+                color red "Invalid option. Exiting..."
+                press_enter
+                ;;
+        esac
 
-ifconfig $private_interface $privateipv4 netmask 255.255.255.0
-route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
+        main_interface=$(ip route | awk '/default/ {print $5}')
+        next_interface_number=$(find_next_private_interface_number)
+        private_interface="${main_interface}:${next_interface_number}"
+        startup_private_ipv4="/root/private_ipv4"
 
-    cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
+        ifconfig $private_interface $privateipv4 netmask 255.255.255.0
+        route_command="route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface"
+
+        # Check if the route already exists before adding it
+        if ! route -n | grep -q "$privateipv4"; then
+            $route_command
+        fi
+
+        # Add the route to the startup script
+        cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
 #!/bin/bash
 systemctl restart systemd-networkd
-#$privateipv4
-#$private_interface
-ifconfig $private_interface $privateipv4 netmask 255.255.255.0
-route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface
+# $privateipv4
+# $private_interface
+$route_command
 EOF
 
-    chmod +x "$startup_private_ipv4"
+        chmod +x "$startup_private_ipv4"
 
-    (crontab -l || echo "") | grep -v "$startup_private_ipv4" | { cat; echo "@reboot $startup_private_ipv4"; } | crontab -
+        # Add the cronjob
+        (crontab -l || echo "") | grep -v "$startup_private_ipv4" | { cat; echo "@reboot $startup_private_ipv4"; } | crontab -
 
-    color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
-    press_enter
+        color green "Private IPv4 was added successfully, your private IP is: $privateipv4"
+        press_enter
     done
-    }
+}
     
     ipv6() {
     clear
@@ -732,12 +737,12 @@ case $option in
                 color red "If you want tunnel 2 server together with private IPv6"
                 color red "they should NOT be the same IPv6 address"
                 color red "For example, fd1d:fc98:b73e:b481::1 and for the 2nd server fd1d:fc98:b73e:b481::2 and for the 3rd server fd1d:fc98:b73e:b481::3, ...."
-                color green "My suggestion is: fd12:3456:789a:1"
+                color green "My suggestion is: fd12:3456:789a::[last_part_ipv6]"
                 echo ""
                 echo ""
-                echo -ne "${YELLOW}Enter the last part of your desired private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
+                echo -ne "${YELLOW}Enter the [last_part_ipv6] of private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
                 read last_part_ipv6
-                privateipv6="fd12:3456:789a:1::$last_part_ipv6"
+                privateipv6="fd12:3456:789a::$last_part_ipv6/64"
                 ;;
             2)
                 echo ""
@@ -746,15 +751,15 @@ case $option in
                 color red "If you want tunnel 2 server together with private IPv6"
                 color red "they should NOT be the same IPv6 address"
                 color red "For example, fd55:9876:5432:1::1 and for the 2nd server fd55:9876:5432:1::2 and for the 3rd server fd55:9876:5432:1::3, ...."
-                color green "My suggestion is: fd42:abcd:1234:[last_part_ipv6]"
+                color green "My suggestion is: fd42:abcd:1234::[last_part_ipv6]"
                 echo ""
                 echo ""
-                echo -ne "${YELLOW}Enter the last part of your desired private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
+                echo -ne "${YELLOW}Enter the [last_part_ipv6] of private IPv6 address (e.g., 1, 2, 3, ...): ${NC}"
                 read last_part_ipv6
-                privateipv6="fd42:abcd:1234:1::$last_part_ipv6"
+                privateipv6="fd42:abcd:1234::$last_part_ipv6/64"
                 ;;
             3)
-                echo -ne "${YELLOW}Enter custom IPv6 address (e.g., fc12:3456:789a:1::1): ${NC}"
+                echo -ne "${YELLOW}Enter custom IPv6 address (e.g., fc12:3456:789a:1::1/64): ${NC}"
                 read privateipv6
                 ;;
             0)
@@ -769,30 +774,30 @@ case $option in
 
 main_interface=$(ip route | awk '/default/ {print $5}')
 next_interface_number=$(find_next_private_interface_number)
-private_interface="${main_interface}:${next_interface_number}"
+private_interface_ip6="${main_interface}:${next_interface_number}"
 startup_private_ipv6="/root/private_ipv6"
+ip_command="ip -6 addr add $privateipv6 dev $private_interface_ip6"
+route_command="ip -6 route add $privateipv6 dev $main_interface"
 
-ip -6 addr add $privateipv6/64 dev $private_interface
-ip -6 route add $privateipv6/64 dev $private_interface
+$ip_command
+$route_command
+touch "$startup_private_ipv6"
 
-    cat << EOF | tee -a "$startup_private_ipv6" > /dev/null
+cat << EOF | tee -a "$startup_private_ipv6" > /dev/null
 #!/bin/bash
 systemctl restart systemd-networkd
 #$privateipv6
-#$private_interface
-ip -6 addr add $privateipv6/64 dev $private_interface
-ip -6 route add $privateipv6/64 dev $private_interface
+#$private_interface_ip6
+$ip_command
 EOF
 
     chmod +x "$startup_private_ipv6"
 
     (crontab -l || echo "") | grep -v "$startup_private_ipv6" | { cat; echo "@reboot $startup_private_ipv6"; } | crontab -
 
-    color green "Private IPv6 was added successfully, your private IP is: $privateipv6"
-
-    press_enter
-    done
-    }
+    echo "Private IPv6 was added successfully, your private IP is: $privateipv6"
+done
+}
 
 while true; do
 clear
