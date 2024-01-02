@@ -626,10 +626,10 @@ ipv4() {
                 color red "If you want tunnel 2 server together with a private IP"
                 color red "they should NOT have the same IPv4 address"
                 color red "For example, 10.1.2.3 and for the 2nd server 10.1.2.4, and for the 3rd server 10.1.2.5, ...."
-                color green "My suggestion is: 10.0.0.[Last_part]"
+                color green "My suggestion is: 10.0.0.1"
                 echo ""
                 echo ""
-                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address (ex. 1, 2, 3, ...): ${NC}"
+                echo -ne "${YELLOW}Enter private IPv4 address (ex. 10.0.0.1, 2, 3, ...): ${NC}"
                 read privateipv4
                 echo ""
                 ;;
@@ -640,10 +640,10 @@ ipv4() {
                 color red "If you want tunnel 2 server together with a private IP"
                 color red "they should NOT have the same IPv4 address"
                 color red "For example, 172.17.18.19 and for the 2nd server 172.17.18.20, and for the 3rd server 172.17.18.21, ...."
-                color green "My suggestion is: 172.16.0.[Last_part]"
+                color green "My suggestion is: 172.16.0.1"
                 echo ""
                 echo ""
-                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address  (ex. 1, 2, 3, ...): ${NC}"
+                echo -ne "${YELLOW}Enter private IPv4 address  (ex. 172.16.0.1, 2, 3, ...): ${NC}"
                 read privateipv4
                 echo ""
                 ;;
@@ -654,10 +654,10 @@ ipv4() {
                 color red "If you want tunnel 2 server together with a private IP"
                 color red "they should NOT have the same IPv4 address"
                 color red "For example, 192.168.42.42 and for the 2nd server 192.168.42.43, and for the 3rd server 192.168.42.44, ...."
-                color green "My suggestion is: 192.168.0.[Last_part]"
+                color green "My suggestion is: 192.168.42.42"
                 echo ""
                 echo ""
-                echo -ne "${YELLOW}Enter [Last_part] private IPv4 address  (ex. 1, 2, 3, ...): ${NC}"
+                echo -ne "${YELLOW}Enter private IPv4 address  (ex. 192.168.42.41, 2, 3, ...): ${NC}"
                 read privateipv4
                 echo ""
                 ;;
@@ -683,21 +683,19 @@ ipv4() {
         private_interface="${main_interface}:${next_interface_number}"
         startup_private_ipv4="/root/private_ipv4"
 
-        ifconfig $private_interface $privateipv4 netmask 255.255.255.0
-        route_command="route add -net $privateipv4 netmask 255.255.255.0 dev $private_interface"
+ip_command="ip address add $privateipv4/24 dev $private_interface"
 
-        # Check if the route already exists before adding it
-        if ! route -n | grep -q "$privateipv4"; then
-            $route_command
-        fi
+# Check if the address already exists before adding it
+if ! ip address show dev $private_interface | grep -q "$privateipv4"; then
+    $ip_command
+fi
 
-        # Add the route to the startup script
-        cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
+cat << EOF | tee -a "$startup_private_ipv4" > /dev/null
 #!/bin/bash
 systemctl restart systemd-networkd
 # $privateipv4
 # $private_interface
-$route_command
+$ip_command
 EOF
 
         chmod +x "$startup_private_ipv4"
@@ -778,9 +776,14 @@ private_interface_ip6="${main_interface}:${next_interface_number}"
 startup_private_ipv6="/root/private_ipv6"
 ip_command="ip -6 addr add $privateipv6 dev $private_interface_ip6"
 route_command="ip -6 route add $privateipv6 dev $main_interface"
+if ! route -n | grep -q "$privateipv6"; then
+    $ip_command
+    $route_command
+else
+    color red "$privateipv6 is exist, try again"
+break
+fi
 
-$ip_command
-$route_command
 touch "$startup_private_ipv6"
 
 cat << EOF | tee -a "$startup_private_ipv6" > /dev/null
@@ -789,6 +792,7 @@ systemctl restart systemd-networkd
 #$privateipv6
 #$private_interface_ip6
 $ip_command
+$route_command
 EOF
 
     chmod +x "$startup_private_ipv6"
