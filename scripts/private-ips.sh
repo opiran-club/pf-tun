@@ -339,7 +339,6 @@ if ((selection >= 1 && selection <= ${#ipv6_subnets[@]})); then
                 echo -e "${RED}Error creating IPv6 address: $ipv6_address${NC}"
             fi
         done
-ip -6 addr add 2a0e:0:1:3015::210/128 dev ens3
 
 cat << EOF | tee -a "$opiran_n6_script" > /dev/null
 #!/bin/bash
