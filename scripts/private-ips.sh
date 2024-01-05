@@ -126,7 +126,7 @@ root
     sleep 2
     modprobe sit
     ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
-    ip -6 link set dev tun6to4 mtu 1280
+    ip -6 link set dev tun6to4 mtu 1480
     ip link set dev tun6to4 up
     ip -6 addr add "$ipv6_address/16" dev tun6to4
     ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
@@ -150,7 +150,7 @@ systemctl restart systemd-networkd
 
 modprobe sit
 ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
-ip -6 link set dev tun6to4 mtu 1280
+ip -6 link set dev tun6to4 mtu 1480
 ip link set dev tun6to4 up
 ip -6 addr add "$ipv6_address/16" dev tun6to4
 ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
