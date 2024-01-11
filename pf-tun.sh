@@ -170,7 +170,7 @@ echo ""
 echo -e "${CYAN}  1. ${YELLOW}SSH Tunnel (v4/6)${NC}"
 echo -e "${CYAN}  2. ${YELLOW}Iptables (v4/6) (UDP+TCP)${NC}"
 echo -e "${CYAN}  3. ${YELLOW}Socat (v4/6)${NC}"
-echo -e "${CYAN}  4. ${YELLOW}Fake tls Tunnel (v4/6)${NC}"
+echo -e "${CYAN}  4. ${YELLOW}WS tunnel (v4/6)${NC}"
 echo -e "${CYAN}  5. ${YELLOW}FRP (v4/6)${NC}"
 echo -e "${CYAN}  6. ${YELLOW}Udp2raw (v4/6)${NC}"
 echo -e "${CYAN}  7. ${YELLOW}Chisel Tunnel${NC}"
@@ -213,7 +213,7 @@ read option
         bash <(curl -fsSL https://raw.githubusercontent.com/opiran-club/pf-tun/main/scripts/socat.sh --ipv4)
         ;;
         4)
-        bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/FakeTlsTunnel/master/FtTunnel.sh --ipv4)
+        bash <(curl -s https://raw.githubusercontent.com/Azumi67/Reverse_tls/main/go.sh)
         ;;
         5)
         apt-get install -y python3 wget python3-pip curl
