@@ -234,6 +234,7 @@ read option
         echo 'export PATH="$PATH:/usr/bin/git"' >> ~/.bashrc
         source ~/.bashrc
         apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
+	apt-get install golang-go -y
 	go get github.com/AlecAivazis/survey/v2
  	go get github.com/fatih/color
   	go get github.com/pkg/sftp
