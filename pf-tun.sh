@@ -221,10 +221,12 @@ read option
         python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/FRP_Reverse_Loadbalance/main/loadbalance.py --ipv4)
         ;;
         6)
-        bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/wgtunnel/main/udp2raw.sh --ipv4)
+        bash <(curl -s https://raw.githubusercontent.com/Azumi67/UDP2RAW_FEC/main/go.sh)
         ;;
         7)
-        bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/pf-tun/main/scripts/chisel.sh --ipv4)
+        apt-get install -y python3 wget python3-pip curl
+        pip install colorama netifaces
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/Chisel_multipleServers/main/chisel.py --ipv4)
         ;;
         9)
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/pf-tun/main/scripts/private-ips.sh --ipv4)
