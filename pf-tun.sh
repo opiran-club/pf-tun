@@ -235,7 +235,6 @@ read option
         source ~/.bashrc
 	sleep 3
 	bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install.sh)
-        bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
         bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/go.sh)
         ;;
         9)
