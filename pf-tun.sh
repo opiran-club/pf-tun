@@ -233,6 +233,7 @@ read option
         apt-get install git -y
         echo 'export PATH="$PATH:/usr/bin/git"' >> ~/.bashrc
         source ~/.bashrc
+	sleep 3
 	bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install.sh)
         bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
         bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/go.sh)
