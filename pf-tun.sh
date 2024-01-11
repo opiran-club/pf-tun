@@ -233,9 +233,8 @@ read option
         apt-get install git -y
         echo 'export PATH="$PATH:/usr/bin/git"' >> ~/.bashrc
         source ~/.bashrc
-        apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
-	apt-get install golang-go -y
- 	apt-get install gccgo-go -y
+	bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install.sh)
+        bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
         bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/go.sh)
         ;;
         9)
