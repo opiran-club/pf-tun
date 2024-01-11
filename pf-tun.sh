@@ -180,14 +180,14 @@ printf "+---------------------------------------------+\n"
 echo ""
 echo -e "${CYAN}  9. ${YELLOW}Private-IP /6to4 / native ipv6 setup${NC}"
 echo -e "${CYAN} 10. ${YELLOW}Tunnel broker setup${NC}"
+echo -e "${CYAN} 11. ${YELLOW}Private IP point to point (For tunnel)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
-echo -e "${CYAN} 11. ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
-echo -e "${CYAN} 12. ${YELLOW}Softether VPN server autorun${NC}"
-echo -e "${CYAN} 13. ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 14. ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
-echo -e "${CYAN} 15. ${YELLOW}Azumi methods [ICMP]${NC}"
+echo -e "${CYAN} 12. ${YELLOW}Block Iran domain and IP for all panels and nodes${NC}"
+echo -e "${CYAN} 13. ${YELLOW}Softether VPN server autorun${NC}"
+echo -e "${CYAN} 14. ${YELLOW}Marzban Panel autorun ${RED}(soon)${NC}"
+echo -e "${CYAN} 15. ${YELLOW}Marzban Node autorun ${RED}(soon)${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
@@ -216,7 +216,9 @@ read option
         bash <(curl -fsSL https://raw.githubusercontent.com/Ptechgithub/FakeTlsTunnel/master/FtTunnel.sh --ipv4)
         ;;
         5)
-        bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/pf-tun/main/scripts/frp.sh --ipv4)
+        apt-get install -y python3 wget python3-pip curl
+        pip install colorama netifaces
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/FRP_Reverse_Loadbalance/main/loadbalance.py --ipv4)
         ;;
         6)
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/wgtunnel/main/udp2raw.sh --ipv4)
@@ -231,13 +233,15 @@ read option
         tunnel_broker
         ;;
         11)
-        bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
+        apt-get install -y python3 wget python3-pip curl
+        pip install colorama netifaces
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/6TO4-GRE-IPIP-SIT/main/ipip2.py --ipv4)
         ;;
         12)
-        bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
+        bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
         ;;
-        15)
-        sudo apt-get install python3 -y && apt-get install wget -y && apt-get install python3-pip -y && pip3 install colorama && pip3 install netifaces && apt-get install curl -y && python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/ICMP_tunnels/main/icmp.py --ipv4)
+        13)
+        bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
         ;;
         16)
         bash <(curl -s https://raw.githubusercontent.com/opiran-club/VPS-Optimizer/main/optimizer.sh --ipv4)
