@@ -3,10 +3,10 @@
  - Iptables (v4/6)
  - Socat (v4/6)
  - WS tunnel (v4/6)
- - FRP (v4/6)
- - Udp2raw (v4/6)
+ - FRP (KCP-TCP) (v4/6)
+ - Udp2raw (TCP-UDP) (v4/6)
  - Chisel Tunnel (v4/6)
- - Rathole tunnel (v4/6)
+ - Rathole tunnel (TCP-NOISE) (v4/6)
  - Private-IP /6to4 / native ipv6 setup (v4/6)
  - Tunnel broker setup
  - Private IP point to point (For tunnel) (v4/6)
