@@ -174,7 +174,7 @@ echo -e "${CYAN}  4. ${YELLOW}WS tunnel (v4/6)${NC}"
 echo -e "${CYAN}  5. ${YELLOW}FRP (v4/6)${NC}"
 echo -e "${CYAN}  6. ${YELLOW}Udp2raw (v4/6)${NC}"
 echo -e "${CYAN}  7. ${YELLOW}Chisel Tunnel${NC}"
-echo -e "${CYAN}  8. ${YELLOW}ICMP Tunnel ${RED}(soon)${NC}"
+echo -e "${CYAN}  8. ${YELLOW}Rathole tunnel${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
 echo ""
@@ -227,6 +227,14 @@ read option
         apt-get install -y python3 wget python3-pip curl
         pip install colorama netifaces
         python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/Chisel_multipleServers/main/chisel.py --ipv4)
+        ;;
+        8)
+        apt-get --fix-broken install
+        apt-get install git -y
+        echo 'export PATH="$PATH:/usr/bin/git"' >> ~/.bashrc
+        source ~/.bashrc
+        apt install curl -y && bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/install2.sh)
+        bash <(curl -s https://raw.githubusercontent.com/Azumi67/Rathole_reverseTunnel/main/go.sh)
         ;;
         9)
         bash <(curl -Ls https://raw.githubusercontent.com/opiran-club/pf-tun/main/scripts/private-ips.sh --ipv4)
