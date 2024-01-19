@@ -165,7 +165,6 @@ EOF
 
 uninstall_6to4_ipv6() {
     clear
-    systemctl restart systemd-networkd
     sleep 1
     echo ""
     echo -e "     ${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
@@ -229,7 +228,6 @@ list_6to4_ipv6() {
 
 status_6to4_ipv6() {
     clear
-    systemctl restart systemd-networkd
     
         echo -e "${MAGENTA}List of 6to4 IPv6 addresses:${NC}"
     
