@@ -122,7 +122,6 @@ root
     echo ""
     press_enter
     
-    systemctl restart systemd-networkd
     sleep 2
     modprobe sit
     ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
@@ -132,8 +131,6 @@ root
     ip -6 route add 2000::/3 via ::192.88.99.1 dev tun6to4 metric 1
     sleep 1
     echo -e "    ${GREEN} [$ipv6_address] was added and routed successfully, please${RED} reboot ${NC}"
-    systemctl restart systemd-networkd
-    
 
     opiran_6to4_dir="/root/opiran-6to4"
     opiran_6to4_script="$opiran_6to4_dir/6to4"
@@ -146,7 +143,6 @@ root
 
 cat << EOF | tee -a "$opiran_6to4_script" > /dev/null
 #!/bin/bash
-systemctl restart systemd-networkd
 
 modprobe sit
 ip tunnel add tun6to4 mode sit ttl 255 remote any local "$ipv4"
