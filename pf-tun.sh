@@ -249,7 +249,10 @@ read option
         python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/6TO4-GRE-IPIP-SIT/main/ipip2.py --ipv4)
         ;;
         12)
-        bash <(curl -s https://raw.githubusercontent.com/opiran-club/block-iran-ip/main/block-ip.sh --ipv4)
+	apt-get update && apt-get install git -y
+        git clone https://github.com/redpilllabs/GFIProxyProtector.git
+	cd GFIProxyProtector
+	./run.sh
         ;;
         13)
         bash <(curl -s -L https://raw.githubusercontent.com/opiran-club/softether/main/opiran-seth)
