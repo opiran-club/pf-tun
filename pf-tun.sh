@@ -66,7 +66,8 @@ tunnel_broker() {
     clear
     color green "Creating tunnelbroker IPV6"
     echo ""
-    color yellow "at first visit tunnelbroker websites and create your tunnel then comeback here"
+    color yellow "At first, visit the tunnelbroker website and create your tunnel, then come back here."
+    echo " tuunelbroker.ch or he.net or tunnelbroker.net"
     echo ""
     echo -ne "${YELLOW}Enter tunnel name (tunnel-id) for tunnelbroker: ${NC}"
     read tunnelname
@@ -83,13 +84,13 @@ tunnel_broker() {
     echo -ne "${YELLOW}Enter Client (Routed) IPV6 address (without ::/64): ${NC}"
     read clientipv6addr
 
-sudo ip tunnel add $tunnelname mode sit remote $serveripv4addr local $clientipv4addr ttl 255
-sudo ip link set $tunnelname up
-sudo ip -6 addr add $clientipv6addr dev $tunnelname
+    sudo ip tunnel add $tunnelname mode sit remote $serveripv4addr local $clientipv4addr ttl 255
+    sudo ip link set $tunnelname up
+    sudo ip -6 addr add $clientipv6addr dev $tunnelname
 
-sleep 1
+    sleep 1
 
-color green "Your tunnel $tunnelname has been created!, now lets permenant its up."
+    color green "Your tunnel $tunnelname has been created! Now let's make it permanent."
 
     if [ ! -f /etc/network/interfaces ]; then
         color red "File /etc/network/interfaces not found. Installing ifupdown..."
@@ -97,9 +98,12 @@ color green "Your tunnel $tunnelname has been created!, now lets permenant its u
         apt-get install -y ifupdown
     fi
 
-interfaces="/etc/network/interfaces";
-grep $TUNNELNAME $interfaces > /dev/null
-if [ $? = 0 ]; then echo "You already have an entry for the tunnel $TUNNELNAME in your $interfaces file."; exit 1; fi
+    interfaces="/etc/network/interfaces";
+    grep $tunnelname $interfaces > /dev/null
+    if [ $? = 0 ]; then
+        echo "You already have an entry for the tunnel $tunnelname in your $interfaces file."
+        exit 1
+    fi
 
 cat << EOF | sudo tee -a $interfaces > /dev/null
 # IPv6 via HE tunnel...
@@ -110,12 +114,14 @@ iface $tunnelname inet6 v4tunnel
     endpoint $serveripv4addr
     local $clientipv4addr
     ttl 255 
-    gateway $serveripv6addr
+    gateway $routed64
 EOF
 
-color green "Your tunnel $tunnelname has been created!, your ipv6 is: $clientipv6addr, please reboot server."
-press_enter
+    color green "Your tunnel $tunnelname has been created! Your IPv6 address is: $clientipv6addr."
+    echo "Please restart networking or reboot the server if necessary."
+    press_enter
 }
+
 
 speedtest() {
     clear
