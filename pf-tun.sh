@@ -175,7 +175,7 @@ echo -e "${CYAN}  3. ${YELLOW}Socat (v4/6)${NC}"
 echo -e "${CYAN}  4. ${YELLOW}WS tunnel (v4/6)${NC}"
 echo -e "${CYAN}  5. ${YELLOW}FRP (v4/6)${NC}"
 echo -e "${CYAN}  6. ${YELLOW}Udp2raw (v4/6)${NC}"
-echo -e "${CYAN}  7. ${YELLOW}Chisel Tunnel${NC}"
+echo -e "${CYAN}  7. ${YELLOW}Chisel Direct Tunnel${NC}"
 echo -e "${CYAN}  8. ${YELLOW}Rathole tunnel${NC}"
 echo ""
 printf "+---------------------------------------------+\n" 
@@ -228,7 +228,7 @@ read option
         7)
         apt-get install -y python3 wget python3-pip curl
         pip install colorama netifaces
-        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/Chisel_multipleServers/main/chisel.py --ipv4)
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/Direct_Chisel/main/chiseld.py --ipv4)
         ;;
         8)
         apt-get --fix-broken install
