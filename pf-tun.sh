@@ -248,7 +248,7 @@ read option
         11)
         apt-get install -y python3 wget python3-pip curl
         pip install colorama netifaces
-        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/6TO4-GRE-IPIP-SIT/main/ipip.py --ipv4)
+        python3 <(curl -Ls https://raw.githubusercontent.com/Azumi67/6TO4-GRE-IPIP-SIT/main/ipipv2.py --ipv4)
         ;;
         12)
 	apt-get update && apt-get install git -y
